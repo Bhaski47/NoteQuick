@@ -1,11 +1,19 @@
-import Access from "./Components/Access/Access";
-// import Top from "./Components/Container/Top/Top";
-
+import Access from "./pages/access";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ToDo from "./pages/todo";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 function App() {
   return (
-    <div>
-      <Access/>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Access />} />
+        <Route path="/" element={
+        <ProtectedRoutes>
+          <ToDo/>
+        </ProtectedRoutes>
+        }/>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
