@@ -3,10 +3,9 @@ const bodyParser =require('body-parser');
 const cors = require('cors');
 const { connectDB } = require('./db');
 const app = express();
-require('dotenv').config();
-
 const userCreate = require('./routes/userRoutes');
 const notes = require('./routes/noteRoutes');
+require('dotenv').config();
 
 app.use(cors());
 app.use(bodyParser.json({extended:true,limit:'32mb'}));

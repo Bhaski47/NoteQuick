@@ -1,13 +1,13 @@
-const Notes = require('../models/notes');
+const { Notes } = require("../models/notes");
 
 const updateNotes = async (req, res) => {
   try {
-    const {id} = req.params;
-    const comp = await Notes.findOneAndUpdate(
-        { email: req.body.email },
-        { $set: { [`data.${id}`]: req.body.data } },
-        { new: true }
-      );
+    const { id } = req.params;
+    const comp = await Notes.findByIdAndUpdate(
+      id,
+      { $set: { title: req.body.title, content: req.body.content } },
+      { new: true }
+    );
     if (!comp) {
       return res.status(404).send({ message: "Document not found" });
     }

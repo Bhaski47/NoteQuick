@@ -2,9 +2,10 @@ const mongoose = require("mongoose");
 
 const noteSchema = new mongoose.Schema({
   email: { type: String, required: true },
-  data: { type: Array },
+  title: { type: String },
+  content: { type: String }
 });
 
-const Notes = mongoose.model("notes", noteSchema);
+const Notes = mongoose.model("Notes", noteSchema);
 
-module.exports = {Notes};
+module.exports = { Notes };
