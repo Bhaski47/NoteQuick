@@ -1,22 +1,20 @@
 # Todo (MERN STACK)
-#MERN Stack Notes App
 
 This is a simple Note-taking application built with the MERN (MongoDB, Express.js, React.js, Node.js) stack. It allows users to create, update, and delete notes.
-#Features
 
-    Create: Add new notes with a title and content.
-    Read: View a list of all existing notes.
-    Update: Edit the title and content of existing notes.
-    Delete: Remove unwanted notes.
+# Features
+Create: Add new notes with a title and content.
+Read: View a list of all existing notes.
+Update: Edit the title and content of existing notes.
+Delete: Remove unwanted notes.
 
-#Technologies Used
+# Technologies Used
+MongoDB: A NoSQL database used to store note data.
+Express.js: A web application framework for Node.js used to build the backend.
+React.js: A JavaScript library for building user interfaces, used for the frontend.
+Node.js: A JavaScript runtime used for server-side development.
 
-    MongoDB: A NoSQL database used to store note data.
-    Express.js: A web application framework for Node.js used to build the backend.
-    React.js: A JavaScript library for building user interfaces, used for the frontend.
-    Node.js: A JavaScript runtime used for server-side development.
-
-#Getting Started
+# Getting Started
 
 1.Clone the repository:
 
@@ -31,7 +29,6 @@ This is a simple Note-taking application built with the MERN (MongoDB, Express.j
     npm install
 
 4.Set up the MongoDB database:
-
     Create a MongoDB Atlas account or set up a local MongoDB instance.
     Update the MongoDB connection string in the server/config/db.js file.
 
@@ -42,14 +39,13 @@ Start the application:
 
 This will concurrently start the backend server and the React app.
 
-    Access the app:
+Access the app:
 
-    Open your browser and go to http://localhost:3000 to use the Notes App.
+Open your browser and go to http://localhost:3000 to use the Notes App.
 
-#Contributing
+# Contributing
 
 Feel free to contribute to the project by creating issues or submitting pull requests.
 
-#Acknowledgments:
-
+# Acknowledgments:
     Special thanks to the MERN stack and the open-source community.
