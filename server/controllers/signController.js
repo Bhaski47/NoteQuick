@@ -12,7 +12,6 @@ const createController = async (req, res) => {
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
     const hashedPass = await bcrypt.hash(req.body.pass, salt);
     await User({ ...req.body, pass: hashedPass }).save();
-    await Notes({ email: req.body.email }).save();
     res.status(200).send({ message: "User Created" });
   } catch (err) {
     res.status(500).send({ message: "Internal Error",error: err.message  });
