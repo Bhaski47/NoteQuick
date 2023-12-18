@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/access.module.scss";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   useEffect(() => {
     document.title = "Login | Todo";
   }, []);
+  const nav = useNavigate();
   const [username, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [email, setEmail] = useState("");
@@ -15,13 +17,16 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const token = await axios.post("http://localhost:8080/auth/log", {
+      const token = await axios.post("http://10.20.1.9:3001/auth/log", {
         pass: pass,
         email: email,
       });
-      console.log(token.data.data);
-      localStorage.setItem(token.data.data, "myTok");
+      const tok = token.data.data;
+      localStorage.setItem("myTok", tok);
+      localStorage.setItem("email",email);
       setReserror("Logging In");
+      setLogin(false);
+      nav("/todo");
     } catch (err) {
       setReserror(err.response.data.message);
       setError(true);
@@ -40,7 +45,7 @@ function Login() {
       pass: pass,
     };
     try {
-      const token = await axios.post("http://localhost:8080/auth/create", data);
+      const token = await axios.post("http://10.20.1.9:3001/auth/create", data);
       setReserror(token.data.message);
     } catch (err) {
       setReserror(err.response.data.message);
@@ -131,6 +136,7 @@ function Login() {
           </button>
         </form>
         {isLogin ? existAcc() : noAcc()}
+        
       </div>
     </div>
   );

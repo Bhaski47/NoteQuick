@@ -6,15 +6,19 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Access />} />
-        <Route path="/" element={
-        <ProtectedRoutes>
-          <ToDo/>
-        </ProtectedRoutes>
-        }/>
+        <Route path="/" element={<Access />} />
+        <Route
+          path="/todo"
+          element={
+            <ProtectedRoutes>
+              <ToDo />
+            </ProtectedRoutes>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default App;
