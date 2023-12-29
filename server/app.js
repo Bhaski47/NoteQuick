@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({limit:'32mb',extended:true}));
 
 connectDB();
 
-PORT = process.env.PORT || 8080;
+PORT = process.env.PORT;
 
 app.use("/auth",userCreate);
 app.use("/",notes);
