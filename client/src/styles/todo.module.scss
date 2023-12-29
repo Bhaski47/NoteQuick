@@ -1,0 +1,81 @@
+@import "fonts";
+
+h4{
+  color: white;
+  font-family: Poppins;
+}
+.button{
+  position: absolute;
+  top: 5%;
+  right: 5%;
+}
+.centerBox {
+  margin: 10% 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  z-index: 1;
+  .iconColor {
+    color: white;
+    cursor: pointer;
+  }
+  .card {
+    border: 1px solid white;
+    border-radius: 10px;
+    height: 100%;
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 40px;
+    .title {
+      color: aliceblue;
+      font-family: Poppins;
+    }
+    .content {
+      color: aliceblue;
+      font-family: Poppins;
+    }
+    .symbol {
+      color: aliceblue;
+      cursor: pointer;
+    }
+  }
+}
+.create {
+  height: 100vh;
+  position: absolute;
+  top: -50px;
+  left: 45%;
+  display: flex;
+  align-items: center;
+  .box {
+    background-color: #26273d;
+
+    width: 100%;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    .label {
+      color: white;
+      font-family: Poppins;
+      font-size: 24px;
+    }
+    .close {
+      cursor: pointer;
+      color: aliceblue;
+      position: absolute;
+      right: -40px;
+    }
+    .input {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      height: 24px;
+      padding: 0 10px;
+      // width: 130%;
+      outline: none;
+    }
+  }
+}
