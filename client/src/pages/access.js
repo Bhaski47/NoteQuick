@@ -17,7 +17,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const token = await axios.post("http://localhost:3001/auth/log", {
+      const token = await axios.post("https://backendtodo-s91r.onrender.com/auth/log", {
         pass: pass,
         email: email,
       });
@@ -45,7 +45,7 @@ function Login() {
       pass: pass,
     };
     try {
-      const token = await axios.post("http://localhost:3001/auth/create", data);
+      const token = await axios.post("https://backendtodo-s91r.onrender.com/auth/create", data);
       setReserror(token.data.message);
     } catch (err) {
       setReserror(err.response.data.message);

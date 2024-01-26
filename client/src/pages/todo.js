@@ -27,7 +27,7 @@ function ToDo() {
   useEffect(() => {
     const getDetails = async () => {
       try {
-        const response = await axios.post("http://localhost:3001/get", {
+        const response = await axios.post("https://backendtodo-s91r.onrender.com/get", {
           email: email,
         });
         if (email.trim() === "") {
@@ -53,7 +53,7 @@ function ToDo() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:3001/update/${item._id}`, {
+    await axios.put(`https://backendtodo-s91r.onrender.com/update/${item._id}`, {
       title: title,
       content: content,
     });
@@ -68,7 +68,7 @@ function ToDo() {
 
   const addNote = async (e) => {
     e.preventDefault();
-    const fetchInfo = await axios.post("http://localhost:3001/insert", {
+    const fetchInfo = await axios.post("https://backendtodo-s91r.onrender.com/insert", {
       email: email,
       title: title,
       content: content,
@@ -82,7 +82,7 @@ function ToDo() {
 
   const handleDelete = async (item) => {
     try {
-      await axios.delete(`http://localhost:3001/delete/${item._id}`, {
+      await axios.delete(`https://backendtodo-s91r.onrender.com/delete/${item._id}`, {
         email: email,
       });
       setFetch((prev) => !prev);
