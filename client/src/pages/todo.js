@@ -68,6 +68,9 @@ function ToDo() {
 
   const addNote = async (e) => {
     e.preventDefault();
+    if(title.length===0 || content.length===0) {
+      return
+    };
     const fetchInfo = await axios.post("https://backendtodo-s91r.onrender.com/insert", {
       email: email,
       title: title,
@@ -120,7 +123,7 @@ function ToDo() {
       )}
       {fetchError && <h2>{fetchError}</h2>}
       {isAdd && (
-        <div className={`${styles.create}`}>
+        <div className={styles.create}>
           <div className={styles.createBox}>
             <form onSubmit={addNote} className={styles.box}>
               <CloseIcon
@@ -145,7 +148,7 @@ function ToDo() {
               <br />
               {addmes === true ? <h4>Added Successfully</h4> : ""}
               <br />
-              <button>Add</button>
+              <button className={styles.buttons}>Add</button>
             </form>
           </div>
         </div>
@@ -183,7 +186,7 @@ function ToDo() {
               <br />
               {updateDetails === true ? <h4>Updated Successfully</h4> : ""}
               <br />
-              <button>Update</button>
+              <button className={styles.buttons}>Update</button>
             </form>
           </div>
         </div>
