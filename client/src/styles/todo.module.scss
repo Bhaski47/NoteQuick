@@ -51,13 +51,31 @@ h4{
   left: 45%;
   display: flex;
   align-items: center;
+  @media screen and (max-width:480px) {
+    position: absolute;
+    left: 10%;
+  }
   .box {
     background-color: #26273d;
-
     width: 100%;
     padding: 30px;
     border-radius: 10px;
     text-align: center;
+    .buttons{
+      height: 2.5em;
+      width: 60%;
+      font-family: Poppins;
+      border-radius: 30px;
+      transition: ease 0.3s;
+      border: 1px solid transparent;
+      &:hover{
+        border: 1px solid transparent;
+        transform: scale(1.1);
+        transition: ease 0.3s;
+        color: white;
+        background-color: #23c483;
+      }
+    }
     .label {
       color: white;
       font-family: Poppins;
