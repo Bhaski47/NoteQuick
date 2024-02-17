@@ -22,7 +22,7 @@ function Login() {
     setLoad(true)
     try {
       const token = await axios.post(
-        "https://backendtodo-s91r.onrender.com/auth/log",
+        `${process.env.REACT_BACKEND_URL}/auth/log`,
         {
           pass: pass,
           email: email,
@@ -49,7 +49,7 @@ function Login() {
     };
     try {
       const token = await axios.post(
-        "https://backendtodo-s91r.onrender.com/auth/create",
+        `${process.env.REACT_BACKEND_URL}/auth/create`,
         data
       );
       successToast(token.data.message);
