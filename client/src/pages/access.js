@@ -21,6 +21,7 @@ function Login() {
   }, [isLogin]);
   const handleLogin = async (e) => {
     e.preventDefault();
+    if(!backEnd_URL) return errorToast("Invalid Backend URL")
     setLoad(true)
     try {
       const token = await axios.post(
