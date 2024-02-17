@@ -13,7 +13,7 @@ function Login() {
   const [isLogin, setLogin] = useState(true);
   const [isLoad, setLoad] = useState(false);
   useEffect(() => {
-    console.log(REACT_BACKEND_URL)
+    console.log(process.env.REACT_BACKEND_URL)
     isLogin
       ? (document.title = "Register | Todo")
       : (document.title = "Login | Todo");
