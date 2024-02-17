@@ -43,10 +43,3 @@ Access the app:
 
 Open your browser and go to http://localhost:3000 to use the Notes App.
 
-# Contributing
-
-Feel free to contribute to the project by creating issues or submitting pull requests.
-
-# Acknowledgments:
-
-Special thanks to the MERN stack and the open-source community.
