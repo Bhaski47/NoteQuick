@@ -7,6 +7,12 @@
     place-items: center;
     background-image: url(../assets/bg.png);
     // font-family: Merienda;
+    .loader{
+      height: 100%;
+      width: 100%;
+      display: grid;
+      place-content: center;
+    }
     .content {
       width: 25vw;
       height: 80%;
