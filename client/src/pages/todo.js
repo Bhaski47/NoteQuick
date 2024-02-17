@@ -27,7 +27,7 @@ function ToDo() {
   useEffect(() => {
     const getDetails = async () => {
       try {
-        const response = await axios.post(`${process.env.BACKEND_URL}/get`, {
+        const response = await axios.post(`https://backendtodo-s91r.onrender.com/get`, {
           email: email,
         });
         if (email.trim() === "") {
@@ -53,7 +53,7 @@ function ToDo() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`${process.env.BACKEND_URL}/update/${item._id}`, {
+    await axios.put(`https://backendtodo-s91r.onrender.com/update/${item._id}`, {
       title: title,
       content: content,
     });
@@ -71,7 +71,7 @@ function ToDo() {
     if(title.length===0 || content.length===0) {
       return
     };
-    const fetchInfo = await axios.post(`${process.env.BACKEND_URL}/insert`, {
+    const fetchInfo = await axios.post(`https://backendtodo-s91r.onrender.com/insert`, {
       email: email,
       title: title,
       content: content,
@@ -85,7 +85,7 @@ function ToDo() {
 
   const handleDelete = async (item) => {
     try {
-      await axios.delete(`${process.env.BACKEND_URL}/delete/${item._id}`, {
+      await axios.delete(`https://backendtodo-s91r.onrender.com/delete/${item._id}`, {
         email: email,
       });
       setFetch((prev) => !prev);

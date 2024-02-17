@@ -6,8 +6,6 @@ import toast, { Toaster } from "react-hot-toast";
 import Loader from "../utils/Loader";
 
 function Login() {
-  var backEnd_URL = process.env.BACKEND_URL;
-  console.log(backEnd_URL)
   const nav = useNavigate();
   const [username, setUser] = useState("");
   const [pass, setPass] = useState("");
@@ -21,11 +19,11 @@ function Login() {
   }, [isLogin]);
   const handleLogin = async (e) => {
     e.preventDefault();
-    if(!backEnd_URL) return errorToast("Invalid Backend URL")
+    
     setLoad(true)
     try {
       const token = await axios.post(
-        `${process.env.REACT_BACKEND_URL}/auth/log`,
+        `https://backendtodo-s91r.onrender.com/auth/log`,
         {
           pass: pass,
           email: email,
@@ -52,7 +50,7 @@ function Login() {
     };
     try {
       const token = await axios.post(
-        `${process.env.REACT_BACKEND_URL}/auth/create`,
+        `https://backendtodo-s91r.onrender.com/auth/create`,
         data
       );
       successToast(token.data.message);
