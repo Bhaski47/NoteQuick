@@ -6,6 +6,8 @@ import toast, { Toaster } from "react-hot-toast";
 import Loader from "../utils/Loader";
 
 function Login() {
+  var backEnd_URL = process.env.REACT_BACKEND_URL;
+  console.log(backEnd_URL)
   const nav = useNavigate();
   const [username, setUser] = useState("");
   const [pass, setPass] = useState("");
@@ -13,7 +15,6 @@ function Login() {
   const [isLogin, setLogin] = useState(true);
   const [isLoad, setLoad] = useState(false);
   useEffect(() => {
-    console.log(process.env.REACT_BACKEND_URL)
     isLogin
       ? (document.title = "Register | Todo")
       : (document.title = "Login | Todo");
