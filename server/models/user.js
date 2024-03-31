@@ -22,7 +22,7 @@ const validate = (data) =>{
 }
 
 userSchema.methods.generateAuthToken=()=>{
-    const tok = jwt.sign({_id:this.id},process.env.JWTSECRET,{expiresIn:'1d'});
+    const tok = jwt.sign({_id:this.id},"adadq3we32e32dwefe3q1!@!",{expiresIn:'1d'});
     return tok;
 }
 

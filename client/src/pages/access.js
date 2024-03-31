@@ -19,17 +19,17 @@ function Login() {
   }, [isLogin]);
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(process.env.REACT_APP_API_BASE_URL);
     setLoad(true)
     try {
       const token = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/auth/log`,
+        `http://localhost:3000/auth/log`,
         {
           pass: pass,
           email: email,
         }
       );
       const tok = token.data.data;
+      console.log(tok);
       localStorage.setItem("myTok", tok);
       localStorage.setItem("email", email);
       setLoad(false)
@@ -50,7 +50,7 @@ function Login() {
     };
     try {
       const token = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/auth/create`,
+        `http://localhost:3000/auth/create`,
         data
       );
       successToast(token.data.message);
