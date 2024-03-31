@@ -22,14 +22,13 @@ function Login() {
     setLoad(true)
     try {
       const token = await axios.post(
-        `http://localhost:3000/auth/log`,
+        `${process.env.REACT_APP_API_BASE_URL}/auth/log`,
         {
           pass: pass,
           email: email,
         }
       );
       const tok = token.data.data;
-      console.log(tok);
       localStorage.setItem("myTok", tok);
       localStorage.setItem("email", email);
       setLoad(false)
@@ -50,7 +49,7 @@ function Login() {
     };
     try {
       const token = await axios.post(
-        `http://localhost:3000/auth/create`,
+        `${process.env.REACT_APP_API_BASE_URL}/auth/create`,
         data
       );
       successToast(token.data.message);
@@ -91,7 +90,6 @@ function Login() {
 
   return (
     <div className={styles.centerBox}>
-      <Toaster />
       <div className={styles.content}>
         {isLoad && (
           <div className={styles.loader}>
