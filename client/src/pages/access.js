@@ -19,11 +19,11 @@ function Login() {
   }, [isLogin]);
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(process.env.PUBLIC_REACT_BACKEND_URL);
+    console.log(process.env.REACT_APP_API_BASE_URL);
     setLoad(true)
     try {
       const token = await axios.post(
-        `${process.env.PUBLIC_REACT_BACKEND_URL}/auth/log`,
+        `${process.env.REACT_APP_API_BASE_URL}/auth/log`,
         {
           pass: pass,
           email: email,
@@ -50,7 +50,7 @@ function Login() {
     };
     try {
       const token = await axios.post(
-        `${process.env.PUBLIC_REACT_BACKEND_URL}/auth/create`,
+        `${process.env.REACT_APP_API_BASE_URL}/auth/create`,
         data
       );
       successToast(token.data.message);
