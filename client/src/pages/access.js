@@ -19,7 +19,7 @@ function Login() {
   }, [isLogin]);
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+    console.log(process.env.PUBLIC_REACT_BACKEND_URL);
     setLoad(true)
     try {
       const token = await axios.post(
