@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../styles/access.module.scss";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Loader from "../utils/Loader";
 
 function Login() {
@@ -22,7 +22,7 @@ function Login() {
     setLoad(true)
     try {
       const token = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/auth/log`,
+        `http://mymediaserver.ddns.net:51040/auth/log`,
         {
           pass: pass,
           email: email,
@@ -49,7 +49,7 @@ function Login() {
     };
     try {
       const token = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/auth/create`,
+        `http://mymediaserver.ddns.net:51040/auth/create`,
         data
       );
       successToast(token.data.message);
