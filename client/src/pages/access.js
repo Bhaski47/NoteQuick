@@ -22,7 +22,7 @@ function Login() {
     setLoad(true)
     try {
       const token = await axios.post(
-        `http://mymediaserver.ddns.net:51040/auth/log`,
+        `${process.env.REACT_APP_API_BASE_URL}/auth/log`,
         {
           pass: pass,
           email: email,
@@ -49,7 +49,7 @@ function Login() {
     };
     try {
       const token = await axios.post(
-        `http://mymediaserver.ddns.net:51040/auth/create`,
+        `${process.env.REACT_APP_API_BASE_URL}/auth/create`,
         data
       );
       successToast(token.data.message);
