@@ -18,11 +18,11 @@ Node.js: A JavaScript runtime used for server-side development.
 
 1.Clone the repository:
 
-    git clone https://github.com/Sycko47/todo.git
+    git clone https://github.com/Bhaski47/NoteQuick.git
 
 2.Navigate to the project folder:
 
-    cd todo
+    cd NoteQuick
 
 3.Install dependencies:
 
