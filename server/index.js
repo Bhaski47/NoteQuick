@@ -6,7 +6,7 @@ const app = express();
 const userCreate = require('./routes/userRoutes');
 const notes = require('./routes/noteRoutes');
 require('dotenv').config();
-
+process.env.TZ = "Asia/Kolkata";
 app.use(cors());
 app.use(bodyParser.json({extended:true,limit:'32mb'}));
 app.use(bodyParser.urlencoded({limit:'32mb',extended:true}));
