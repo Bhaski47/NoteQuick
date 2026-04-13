@@ -1,10 +1,9 @@
-"use server"
 import Header from "./_components/Header";
 import CheckBox from "./_components/CheckBox";
 import { getAllTodos } from "@/actions/getAllTodos";
 import { redirect } from "next/navigation";
 import { getUserDetails } from "@/actions/getUserDetails";
-
+export const dynamic = 'force-dynamic';
 export default async function TasksPage() {
   const todoData = await getAllTodos();
   if (todoData && "redirect" in todoData) {

@@ -1,9 +1,8 @@
-"use server";
 import TabNavigate from "@/app/settings/_components/TabNavigate";
 import { redirect } from "next/navigation";
 import { getUserDetails } from "@/actions/getUserDetails";
 import UserStoreInit from "./_components/UserStoreInit";
-
+export const dynamic = 'force-dynamic';
 export default async function SettingsPage() {
   const userDetails = await getUserDetails();
   if (userDetails && "redirect" in userDetails) {
