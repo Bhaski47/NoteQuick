@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                         .allowedOrigins("http://localhost:3000","http://localhost:3001","http://192.168.1.3:3000","http://10.132.3.74:3000")
+                         .allowedOrigins("http://localhost:3000","https://notequick.vercel.app/")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
