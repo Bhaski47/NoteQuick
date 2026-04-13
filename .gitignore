@@ -1,0 +1,10 @@
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# Java/Spring config
+backend/src/main/resources/application.properties
+backend/src/main/resources/application.yml
+
