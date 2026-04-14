@@ -2,7 +2,7 @@
 import { Button } from "@heroui/react";
 import axios from "axios";
 import { useState } from "react";
-// import { useRouter } from "next/navigation";
+import NProgress from "nprogress";
 import { loginResponse } from "@/types";
 import InputButton from "@/utils/InputButton";
 
@@ -22,6 +22,7 @@ export default function ForgotPassword() {
     if (!email) return;
     try {
       setIsLoading(true);
+      NProgress.start();
       setError("");
       const res = await axios.post(
         `${process.env.host}/authenticate/forgot-password`,
@@ -43,6 +44,7 @@ export default function ForgotPassword() {
     } catch (e: any) {
       setError(e.response?.data?.message || "No account found with this email");
     } finally {
+      NProgress.done();
       setIsLoading(false);
     }
   };
@@ -51,6 +53,7 @@ export default function ForgotPassword() {
     if (!otp) return;
     try {
       setIsLoading(true);
+      NProgress.start();
       setError("");
       const res = await axios.post(
         `${process.env.host}/authenticate/verify-otp`,
@@ -76,6 +79,7 @@ export default function ForgotPassword() {
     } catch (e: any) {
       setError(e.response?.data?.message || "Invalid or expired OTP");
     } finally {
+      NProgress.done();
       setIsLoading(false);
     }
   };
@@ -91,6 +95,7 @@ export default function ForgotPassword() {
     }
     try {
       setIsLoading(true);
+      NProgress.start();
       setError("");
       const res = await axios.post(
         `${process.env.host}/authenticate/reset-password`,
@@ -116,6 +121,7 @@ export default function ForgotPassword() {
       setError(e.response?.data?.message || "Invalid OTP or request expired");
       setStep("otp");
     } finally {
+      NProgress.done();
       setIsLoading(false);
     }
   };
@@ -152,7 +158,7 @@ export default function ForgotPassword() {
               Forgot password?
             </h2>
             <p className="text-sm text-light-textSecondary dark:text-dark-textSecondary mt-1">
-              Enter your email and we'll send you an OTP
+              Enter your email and we&apos;ll send you an OTP
             </p>
           </div>
           <InputButton

@@ -6,6 +6,7 @@ import { Button } from "@heroui/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import NProgress from "nprogress";
 
 export default function Auth() {
   const router = useRouter()
@@ -20,6 +21,7 @@ export default function Auth() {
 
   async function handleSubmit() {
     setIsLoading(true);
+    NProgress.start();
     if (switchAuth) {
       const response: loginResponse = await axios
         .post(`${process.env.host}/authenticate/login`, {
@@ -57,6 +59,7 @@ export default function Auth() {
         body: JSON.stringify({ token }),
       });
       setIsLoading(false);
+      NProgress.done();
       router.push("/my-task")
     }
   }
@@ -153,7 +156,7 @@ export default function Auth() {
                   className="cursor-pointer"
                   onClick={() => setForgotPassword(true)}
                 >
-                  <u>Click here</u>
+                  <u> Click here</u>
                 </b>
               </p>
             </div>

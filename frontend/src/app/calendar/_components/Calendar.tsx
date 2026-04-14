@@ -28,6 +28,7 @@ import {
   useDisclosure,
   Chip,
 } from "@heroui/react";
+import NProgress from "nprogress";
 
 const localizer = momentLocalizer(moment);
 
@@ -58,6 +59,7 @@ function CalendarComponent({ userDetails }: TabNavigateProps) {
 
   const fetchEvents = async (date: Date) => {
     try {
+      NProgress.start();
       const token = getCookie("token");
       const fromDate = moment(date).startOf("week").format("DD/MM/YYYY");
       const toDate = moment(date).endOf("week").format("DD/MM/YYYY");
@@ -90,6 +92,8 @@ function CalendarComponent({ userDetails }: TabNavigateProps) {
       }
     } catch (err) {
       console.error("Failed to fetch calendar events:", err);
+    }finally{
+      NProgress.done();
     }
   };
 

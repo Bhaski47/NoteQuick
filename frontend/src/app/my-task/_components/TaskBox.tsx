@@ -27,6 +27,7 @@ import { useEffect, useRef, useState } from "react";
 import { getLocalTimeZone } from "@internationalized/date";
 import { toCalendarDateTimeValue, toNoonISO } from "@/utils/FormatTime";
 import { LuTrash2, LuX } from "react-icons/lu";
+import NProgress from "nprogress";
 
 export default function TaskBox({
   taskData,
@@ -96,6 +97,7 @@ export default function TaskBox({
         return;
       }
       setIsLoading(true);
+      NProgress.start();
       const token = getCookie("token");
       const isNew = taskData.mode === "new" || mode === "new";
       const url = isNew
@@ -119,6 +121,7 @@ export default function TaskBox({
       console.error("Todo operation failed:", error);
       alert("Something went wrong");
     } finally {
+      NProgress.done();
       setIsLoading(false);
     }
   };
@@ -126,6 +129,7 @@ export default function TaskBox({
   const handleDelete = async () => {
     try {
       setIsLoading(true);
+      NProgress.start();
       const token = getCookie("token");
       await axios.post(
         `${process.env.host}/todos/deleteTodo`,
@@ -140,6 +144,7 @@ export default function TaskBox({
       console.error("Delete failed:", error);
       alert("Something went wrong");
     } finally {
+      NProgress.done();
       setIsLoading(false);
     }
   };
