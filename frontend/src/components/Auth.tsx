@@ -4,10 +4,11 @@ import { useUserStore } from "@/store/useUserStore";
 import { loginResponse } from "@/types";
 import { Button } from "@heroui/react";
 import axios from "axios";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function Auth() {
+  const router = useRouter()
   const [switchAuth, setSwitchAuth] = useState(true);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -26,8 +27,7 @@ export default function Auth() {
           password,
         })
         .then((res) => res.data);
-      handleApiResponse(response).then(() => redirect("/my-task"));
-      setIsLoading(false);
+      handleApiResponse(response)
     } else {
       const response = await axios
         .post(`${process.env.host}/authenticate/register`, {
@@ -37,8 +37,7 @@ export default function Auth() {
         })
         .then((res) => res.data);
       setEmailToStore(email);
-      handleApiResponse(response).then(() => redirect("/my-task"));
-      setIsLoading(false);
+      handleApiResponse(response)
     }
   }
 
@@ -57,7 +56,8 @@ export default function Auth() {
         },
         body: JSON.stringify({ token }),
       });
-      redirect("/my-task");
+      setIsLoading(false);
+      router.push("/my-task")
     }
   }
 

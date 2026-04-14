@@ -18,15 +18,16 @@ export async function middleware(request: NextRequest) {
     if (!token) {
       return NextResponse.redirect(new URL("/auth", request.url));
     }
-
+    console.log(process.env.JWT_SECRET);
+    
     try {
-      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+      const secret = Buffer.from(process.env.JWT_SECRET!, "base64");
       await jwtVerify(token, secret);
 
       return NextResponse.next();
     } catch (error) {
       console.error("JWT Verification Error:", error);
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/auth", request.url));
     }
   }
 

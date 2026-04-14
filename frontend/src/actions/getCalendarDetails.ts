@@ -1,5 +1,5 @@
 "use server";
-import { allTodos, CalendarEvent } from "@/types";
+import { CalendarEvent } from "@/types";
 import axios from "axios";
 import { cookies } from "next/headers";
 
@@ -13,7 +13,7 @@ export async function getCalendarDetails(
       return { redirect: "/auth" };
     }
     let res = await axios.post(
-      `http://localhost:8080/calendar/getCalendarDetails`,
+      `${process.env.NEXT_PUBLIC_API_URL}/calendar/getCalendarDetails`,
       {
         fromDate:"2025-04-01",
         toDate:"2025-04-31"

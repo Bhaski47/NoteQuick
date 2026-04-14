@@ -11,7 +11,7 @@ export async function getAllTodos(): Promise<
     if (!token) {
       return { redirect: "/auth" };
     }
-    let res = await axios.post(`http://localhost:8080/todos/getTodos`,{}, {
+    let res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/todos/getTodos`,{}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
