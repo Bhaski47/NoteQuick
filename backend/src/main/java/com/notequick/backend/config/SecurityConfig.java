@@ -57,8 +57,8 @@ public class SecurityConfig {
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/authenticate/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/{username}").permitAll()
+//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/{username}").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/todos/**").authenticated()
                         .anyRequest().authenticated())

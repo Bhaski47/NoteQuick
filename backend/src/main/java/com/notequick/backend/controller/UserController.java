@@ -1,6 +1,7 @@
 package com.notequick.backend.controller;
 
 import com.notequick.backend.dto.user.UpdateUserDTO;
+import com.notequick.backend.dto.user.UserDetailsDTO;
 import com.notequick.backend.entity.User;
 import com.notequick.backend.utils.HttpResponse;
 import com.notequick.backend.repository.UserJpaRepo;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @RestController
@@ -48,6 +51,16 @@ public class UserController {
         userService.deleteUser(token);
         HttpResponse httpResponse = new HttpResponse(HttpStatus.OK.value(), "User Deleted Successfully");
         return new ResponseEntity<>(httpResponse,HttpStatus.OK);
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<HashMap<String,Object>> getUserDetails(@PathVariable String username) {
+        UserDetailsDTO response = userService.userProfileById(username);
+        LinkedHashMap<String,Object> res = new LinkedHashMap<>();
+        res.put("status",HttpStatus.OK.value());
+        res.put("message","Data Acquired Successfully");
+        res.put("data",response);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import Auth from "../../../components/Auth";
+import Auth from "./_components/Auth";
 
 export default function Page() {
   // const [switchAuth, setSwitchAuth] = useState(false);
