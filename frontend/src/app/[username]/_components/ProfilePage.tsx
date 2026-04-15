@@ -45,23 +45,22 @@ export default function ProfilePage({ data }: Props) {
               </div>
 
               <span className="font-medium text-2xl">Bhaskar</span>
-              <p>@Bhaski47</p>
+              <p>@{data.userName}</p>
               <p className="text-wrap">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque,
-                ab.
+
               </p>
               <div className="flex flex-row gap-x-4">
                 <p className="rounded-full bg-light-borderPrimary px-2 py-1">
-                  bhaskarg@gmail.com
+                  {data.email || "-"}
                 </p>
                 <p className="rounded-full bg-light-borderPrimary px-2 py-1">
-                  Male
+                  {data.gender || "Unknown"}
                 </p>
               </div>
               <div className="flex justify-between gap-x-6">
                 <div className="rounded-lg p-4 bg-light-backgroundProfileCard w-full">
                   <p className="text-light-textSecondary">TOTAL TASKS</p>
-                  <p className="text-2xl">4</p>
+                  <p className="text-2xl">{(data.activeTodoCount || 0) + (data.completedTodoCount || 0) + (data.removedTodoCount || 0)}</p>
                 </div>
                 <div className="rounded-lg p-4 bg-light-backgroundProfileCard w-full">
                   <p className="text-light-textSecondary">STATUS</p>
