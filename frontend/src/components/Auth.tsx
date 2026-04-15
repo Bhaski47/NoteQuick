@@ -7,6 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import NProgress from "nprogress";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Auth() {
   const router = useRouter()
@@ -18,6 +19,7 @@ export default function Auth() {
   const [forgotPassword, setForgotPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const setEmailToStore = useUserStore((s) => s.setEmail);
+  const {setTheme} = useTheme();
   const clearUserData = useUserStore((s) => s.clearUserData);
 
   async function handleSubmit() {
@@ -81,6 +83,7 @@ export default function Auth() {
     }
     f();
     clearUserData();
+    setTheme("system");
   }, []);
 
   useEffect(() => {

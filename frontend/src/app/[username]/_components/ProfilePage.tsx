@@ -4,21 +4,15 @@ import { Props } from "@/types/profile";
 import NavCard from "./NavCard";
 import InfoCard from "./InfoCard";
 import { useEffect } from "react";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function ProfilePage({ data }: Props) {
+  const {setTheme} = useTheme();
   useEffect(() => {
-    const html = document.documentElement;
-    const previous = html.className;
-
-    html.classList.remove("dark");
-    html.classList.add("light");
-
-    return () => {
-      html.className = previous;
-    };
+    setTheme('light')
   }, []);
   return (
-    <div className="light" style={{ colorScheme: "light" }}>
+    <div>
       <main className="w-[90%] md:w-[70%] m-auto ">
         <div className="flex justify-between my-4 ">
           <div>
@@ -41,10 +35,10 @@ export default function ProfilePage({ data }: Props) {
             <div className="flex flex-col w-full md:w-96 gap-3 px-4 py-6 rounded-3xl shadow-lg border border-gray-100">
               {/* shadow-[0_0_10px_rgba(0,0,0,0.2)]} */}
               <div className="rounded-3xl bg-black w-20 h-20 flex items-center justify-center">
-                <h2 className="text-white text-3xl font-semibold">BH</h2>
+                <h2 className="text-white text-3xl font-semibold">{data?.userName?.length >=2 ? data?.userName?.slice(0,2).toUpperCase() : data?.userName?.toUpperCase() }</h2>
               </div>
 
-              <span className="font-medium text-2xl">Bhaskar</span>
+              <span className="font-medium text-2xl">{data.name}</span>
               <p>@{data.userName}</p>
               <p className="text-wrap">
 
@@ -54,7 +48,7 @@ export default function ProfilePage({ data }: Props) {
                   {data.email || "-"}
                 </p>
                 <p className="rounded-full bg-light-borderPrimary px-2 py-1">
-                  {data.gender || "Unknown"}
+                  {data.gender === "-" || data.gender.length === 0 ? "Unknown" : data.gender}
                 </p>
               </div>
               <div className="flex justify-between gap-x-6">
