@@ -16,51 +16,62 @@ export default function Auth() {
   const [userName, setUserName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const setEmailToStore = useUserStore((s) => s.setEmail);
   const clearUserData = useUserStore((s) => s.clearUserData);
 
   async function handleSubmit() {
+    setError(null);
     setIsLoading(true);
     NProgress.start();
-    if (switchAuth) {
-      const response: loginResponse = await axios
-        .post(`${process.env.host}/authenticate/login`, {
-          identifier: userName,
-          password,
-        })
-        .then((res) => res.data);
-      handleApiResponse(response)
-    } else {
-      const response = await axios
-        .post(`${process.env.host}/authenticate/register`, {
-          username: userName,
-          email,
-          password,
-        })
-        .then((res) => res.data);
-      setEmailToStore(email);
-      handleApiResponse(response)
+
+    try {
+      if (switchAuth) {
+        const response: loginResponse = await axios
+          .post(`${process.env.host}/authenticate/login`, {
+            identifier: userName,
+            password,
+          })
+          .then((res) => res.data);
+        handleApiResponse(response);
+      } else {
+        const response = await axios
+          .post(`${process.env.host}/authenticate/register`, {
+            username: userName,
+            email,
+            password,
+          })
+          .then((res) => res.data);
+        setEmailToStore(email);
+        handleApiResponse(response);
+      }
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Something went wrong. Please try again.";
+      setError(message);
+      setIsLoading(false);
+      NProgress.done();
     }
   }
 
   async function handleApiResponse(res: loginResponse) {
     if ("status" in res) {
-      if (res.status !== 200) {
-        alert(res.message);
-        throw new Error(res.message);
-      }
+      const message = res.message || "An error occurred.";
+      setError(message);
+      setIsLoading(false);
+      NProgress.done();
     } else if ("other_message" in res) {
       const token = res.other_message;
       await fetch("/api/set-token", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });
       setIsLoading(false);
       NProgress.done();
-      router.push("/my-task")
+      router.push("/my-task");
     }
   }
 
@@ -76,27 +87,35 @@ export default function Auth() {
     setEmail("");
     setPassword("");
     setUserName("");
-  }, [switchAuth]);if (forgotPassword) {
-  return (
-    <div className="flex-1 backgroundColor flex flex-col items-center sm:w-[35dvw] text-light-textPrimary">
-      <main className="w-3/4 sm:w-[80%] pt-[25%]">
-        <h1 className="text-textPrimary text-3xl font-bold mb-[13%]">
-          NOTEQUICK
-        </h1>
-        <ForgotPassword />
-        <p className="text-center mt-6">
-          Remember your password?{" "}
-          <b
-            className="cursor-pointer"
-            onClick={() => setForgotPassword(false)}
-          >
-            <u>Back to Login</u>
-          </b>
-        </p>
-      </main>
-    </div>
-  );
-}
+    setError(null);
+  }, [switchAuth]);
+
+  // Reusable error banner
+  const ErrorBanner = () =>
+    error ? (
+      <div className="w-full text-sm text-red-500 bg-red-50 border border-red-200 rounded-md px-3 py-2 text-center">
+        {error}
+      </div>
+    ) : null;
+
+  if (forgotPassword) {
+    return (
+      <div className="flex-1 backgroundColor flex flex-col items-center sm:w-[35dvw] text-light-textPrimary">
+        <main className="w-3/4 sm:w-[80%] pt-[25%]">
+          <h1 className="text-textPrimary text-3xl font-bold mb-[13%]">
+            NOTEQUICK
+          </h1>
+          <ForgotPassword />
+          <p className="text-center mt-6">
+            Remember your password?{" "}
+            <b className="cursor-pointer" onClick={() => setForgotPassword(false)}>
+              <u>Back to Login</u>
+            </b>
+          </p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -142,6 +161,7 @@ export default function Auth() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <ErrorBanner />
               <Button
                 isLoading={isLoading}
                 isDisabled={isLoading}
@@ -212,6 +232,7 @@ export default function Auth() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <ErrorBanner />
               <Button
                 isLoading={isLoading}
                 isDisabled={isLoading}

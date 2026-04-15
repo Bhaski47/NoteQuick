@@ -23,9 +23,9 @@ public interface UserService {
 
     UserDetailsDTO userProfileById(String userName);
 
-    void sendOtp(String toEmail, String otp);
+    void sendOtp(String toEmail, String otp, String username) throws Exception;
 
-    void sendOtp(String email);
+    void sendOtp(String email) throws Exception;
 
     void verifyOtpAndResetPassword(String email, String otp, String newPassword);
 

@@ -10,13 +10,19 @@ import com.notequick.backend.exception.InvalidCredentialException;
 import com.notequick.backend.repository.OtpTokensRepo;
 import com.notequick.backend.repository.UserJpaRepo;
 import com.notequick.backend.utils.JwtUtil;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +49,9 @@ public class UserServiceImpl implements UserService{
         this.mailSender = mailSender;
         this.otpTokensRepository = otpTokensRepository;
     }
+
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     private final OtpTokensRepo otpTokensRepository;
 
@@ -135,23 +144,28 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void sendOtp(String toEmail, String otp) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(toEmail);
-        message.setSubject("NoteQuick - Password Reset OTP");
-        message.setText(
-                "Your OTP for password reset is: " + otp + "\n\n" +
-                        "This OTP is valid for 10 minutes.\n" +
-                        "If you did not request this, please ignore this email."
-        );
+    public void sendOtp(String toEmail, String otp, String username) throws Exception {
+        ClassPathResource resource = new ClassPathResource("templates/otp-email.html");
+        String template = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        String html = template
+                .replace("{{username}}", username)
+                .replace("{{otp}}", otp);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setTo(toEmail);
+        helper.setFrom(fromEmail, "NoteQuick");
+        helper.setSubject("Your OTP Code – " + otp);
+        helper.setText(html, true);
+
         mailSender.send(message);
     }
 
     @Override
     @Transactional
-    public void sendOtp(String email) {
-        userJpaRepo.findByEmail(email)
-                .orElseThrow(() -> new InvalidCredentialException("No account found with this email"));
+    public void sendOtp(String email) throws Exception {
+        String userName = userJpaRepo.findByEmail(email)
+                .orElseThrow(() -> new InvalidCredentialException("No account found with this email")).getUsername();
 
         otpTokensRepository.deleteByEmail(email);
         String otp = String.format("%06d", new Random().nextInt(999999));
@@ -161,7 +175,7 @@ public class UserServiceImpl implements UserService{
         token.setOtp(otp);
         token.setExpiresAt(LocalDateTime.now().plusMinutes(10));
         otpTokensRepository.save(token);
-        sendOtp(email, otp);
+        sendOtp(email, otp,userName);
     }
 
     @Override

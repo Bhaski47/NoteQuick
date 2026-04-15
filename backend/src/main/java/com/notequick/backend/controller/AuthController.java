@@ -39,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> body) throws Exception {
         userService.sendOtp(body.get("email"));
         return ResponseEntity.ok(new HttpResponse(HttpStatus.OK.value(),"OTP sent to your email"));
     }

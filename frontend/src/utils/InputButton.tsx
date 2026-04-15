@@ -13,11 +13,11 @@ export default function InputButton({
   customTheme = undefined,
   inputType
 }: InputButtonProps) {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const isFilled = !!value && value.length > 0;
   return (
     <div
-      className={`${customTheme === undefined ? theme === "light" ? "formField" : "darkformField" : customTheme} ${buttonClassName}`}
+      className={`${customTheme === undefined ? resolvedTheme === "light" ? "formField" : "darkformField" : customTheme} ${buttonClassName}`}
     >
       <input
         required

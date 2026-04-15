@@ -8,6 +8,17 @@
   box-sizing: border-box;
 }
 
+[data-slot="input-wrapper"],
+[data-slot="inner-wrapper"],
+[data-slot="input"],
+[data-slot="base"] {
+  outline: none !important;
+}
+
+*:focus {
+  outline: none !important;
+}
+
 :root {
   --font-manrope: var(--font-manrope);
 }

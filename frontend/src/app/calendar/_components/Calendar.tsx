@@ -35,7 +35,7 @@ const localizer = momentLocalizer(moment);
 function CalendarComponent({ userDetails }: TabNavigateProps) {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const setEmail = useUserStore((s) => s.setEmail);
   const setUserName = useUserStore((s) => s.setUserName);
@@ -118,7 +118,7 @@ function CalendarComponent({ userDetails }: TabNavigateProps) {
     },
   };
 
-  const t = theme === "dark" ? themes.dark : themes.light;
+  const t = resolvedTheme === "dark" ? themes.dark : themes.light;
 
   const CustomEvent: React.FC<EventProps<CalendarEvent>> = ({ event }) => {
     const isSameDay = moment(event.start).isSame(moment(event.end), "day");

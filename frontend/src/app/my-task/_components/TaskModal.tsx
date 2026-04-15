@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Button,
-  DatePicker,
-  Input,
-  Textarea,
-} from "@heroui/react";
+import { Button, DatePicker, Input, Textarea } from "@heroui/react";
 import { taskBoxProps } from "@/types";
 import { CalendarDate } from "@internationalized/date";
 import { motion, AnimatePresence } from "framer-motion";
@@ -53,7 +48,7 @@ function TaskModal({
                 required
                 label="Title"
                 type="text"
-                variant={"underlined"}
+                variant={"flat"}
                 value={taskData.title}
                 onChange={(e) =>
                   setTaskData((prev) => ({
@@ -65,16 +60,15 @@ function TaskModal({
               <div className="h-[75%] justify-evenly">
                 <Textarea
                   isClearable
-                  disableAnimation
-                  disableAutosize
                   className="col-span-12 md:col-span-6 mb-6 md:mb-0 mt-8"
                   label="Description"
                   labelPlacement="outside"
                   placeholder="Enter your description"
-                  variant={"bordered"}
+                  variant={"flat"}
                   classNames={{
-                    base: "max-w-sm mt-[-10px] ",
-                    input: "resize-y min-h-[10rem]",
+                    base: "max-w-sm mt-[-10px]",
+                    input: "resize-y min-h-[10rem] outline-none focus:outline-none",
+                    inputWrapper: "shadow-none",
                   }}
                   value={taskData.description}
                   onChange={(e) =>
