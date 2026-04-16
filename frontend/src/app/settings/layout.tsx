@@ -1,4 +1,3 @@
-import SideBar from "@/components/SideBar/SideBar";
 import { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
 
@@ -24,12 +23,9 @@ export default function SettingsLayout({
 }) {
   return (
     <div className={`overflow-y-hidden ${manrope.variable} font-manrope`}>
-      {/* <HeroProvider> */}
-        <SideBar />
-        <div className="w-full bg-light-backgroundColor dark:bg-dark-backgroundColor">
-          {children}
-        </div>
-      {/* </HeroProvider> */}
+      <div className="w-full bg-light-backgroundColor dark:bg-dark-backgroundColor">
+        {children}
+      </div>
     </div>
   );
 }

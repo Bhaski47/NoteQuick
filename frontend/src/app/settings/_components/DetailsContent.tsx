@@ -32,7 +32,7 @@ export default function DetailsContent() {
           </p>
           <StaticInput
             placeholder=""
-            label="https://notequick.vercel.app/users/"
+            label="https://notequick.vercel.app/user/"
             inputValue={userName}
           />
         </div>

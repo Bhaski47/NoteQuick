@@ -2,8 +2,8 @@
 import React from 'react'
 import ActionButton from '../ActionButton'
 
-export default function NameBox() {
+export default function NameBox({name}:{name:string}) {
   return (
-    <ActionButton name="Bhaskar G" onClick={() => {}} className='border-black dark:border-white' />
+    <ActionButton name={name} onClick={() => {}} className='border-black dark:border-white' />
   )
 }

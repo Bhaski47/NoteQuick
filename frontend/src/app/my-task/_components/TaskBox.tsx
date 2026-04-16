@@ -90,6 +90,10 @@ export default function TaskBox({
     setHasChanges(changesExist);
   }, [taskData]);
 
+  console.log("taskData.toDate");
+  console.log(taskData);
+  
+
   const handleSave = async () => {
     try {
       if (!taskData.title?.trim()) {
@@ -101,8 +105,8 @@ export default function TaskBox({
       const token = getCookie("token");
       const isNew = taskData.mode === "new" || mode === "new";
       const url = isNew
-        ? `${process.env.host}/todos/addTodo`
-        : `${process.env.host}/todos/updateTodo`;
+      ? `${process.env.host}/todos/addTodo`
+      : `${process.env.host}/todos/updateTodo`;
 
       const payload = {
         ...taskData,

@@ -1,4 +1,3 @@
-import SideBar from "@/components/SideBar/SideBar";
 import { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
 
@@ -23,12 +22,11 @@ export default function TaskLayout({
 }) {
   return (
     <div className={`${manrope.variable} font-manrope`}>
-        <SideBar />
-        <div
-          className={`w-full bg-light-backgroundColor dark:bg-dark-backgroundColor`}
-        >
-          {children}
-        </div>
+      <div
+        className={`w-full bg-light-backgroundColor dark:bg-dark-backgroundColor`}
+      >
+        {children}
+      </div>
     </div>
   );
 }
