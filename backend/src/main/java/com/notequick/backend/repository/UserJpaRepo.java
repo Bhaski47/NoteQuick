@@ -23,7 +23,7 @@ public interface UserJpaRepo extends JpaRepository<User, UUID> {
             "count(case when t.status = 'ACTIVE' then 1 end), " +
             "u.userName,u.email,u.gender,u.name,u.phone,u.description,u.birthday," +
             "u.city,u.country) FROM User u " +
-            "JOIN Todo t ON t.userId = u.userId " +
+            "LEFT JOIN Todo t ON t.userId = u.userId " +
             "WHERE u.userName =:userId")
     Optional<UserDetailsDTO> getUserDetails(@Param("userId") String userId);
 }
