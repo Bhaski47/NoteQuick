@@ -50,7 +50,7 @@ export default function Auth() {
           return;
         }
         if (!isValidEmail(email)) {
-          setEmail("Invalid Mail format");
+          setError("Invalid Mail format");
           return;
         }
         const response = await axios
