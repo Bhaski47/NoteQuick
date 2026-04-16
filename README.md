@@ -1,5 +1,5 @@
 # NoteQuick
-A Full-Stack Productivity App for Tasks, Notes, Calendar, and User Management Using Next.js and Spring Boot
+A Full-Stack Productivity App for Tasks, Notes and Calendar Using Next.js and Spring Boot
 
 ## Table of Contents
 - [Installation](#installation)
