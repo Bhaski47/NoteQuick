@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import NProgress from "nprogress";
 import { useTheme } from "@/context/ThemeContext";
+import { isValidEmail } from "@/utils/validation";
 
 export default function Auth() {
   const router = useRouter()
@@ -26,7 +27,14 @@ export default function Auth() {
     setError(null);
     setIsLoading(true);
     NProgress.start();
-
+    if(!userName || userName.length <=0){
+      setError("Invalid Username");
+      return;
+    }
+    if(!password || password.length <= 0){
+      setError("Invalid Password");
+      return;
+    }
     try {
       if (switchAuth) {
         const response: loginResponse = await axios
@@ -37,6 +45,14 @@ export default function Auth() {
           .then((res) => res.data);
         handleApiResponse(response);
       } else {
+        if(!email || email.length <=0){
+          setError("Invalid email");
+          return;
+        }
+        if(!isValidEmail(email)){
+          setEmail("Invalid Mail format");
+          return;
+        }
         const response = await axios
           .post(`${process.env.host}/authenticate/register`, {
             username: userName,
