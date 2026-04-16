@@ -50,10 +50,7 @@ public class Todo {
     @Enumerated(EnumType.STRING)
     @Column(name = "status",nullable = false)
     private TodoStatus status = TodoStatus.ACTIVE;
-
-    @Column(name = "is_completed", nullable = false)
-    private Boolean isCompleted = false;
-
+    
     @CreatedDate
     @JsonIgnore
     @Column(name = "created_at", updatable = false)

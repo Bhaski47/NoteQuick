@@ -4,6 +4,7 @@ import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import Divider from "@/utils/Divider";
 import { allTodos, taskBoxProps } from "@/types";
 import { onSaveTodo } from "@/actions/onSaveTodo";
+import { TodoStatus } from "@/enum/TodoStatus";
 
 interface TodoListProps {
   taskData: taskBoxProps;
@@ -27,19 +28,19 @@ const TodoList: React.FC<TodoListProps> = ({
         <Checkbox
           color="secondary"
           lineThrough={true}
-          isSelected={taskData?.isCompleted ?? false}
+          isSelected={taskData?.status === TodoStatus.COMPLETED}
           onValueChange={async (isSelected) => {
-
+            const status = isSelected ? TodoStatus.COMPLETED : TodoStatus.ACTIVE;
             setAllTodos(
               allTodos.map((value) => {
                 if (value.todoId === taskData.todoId) {
-                  return { ...value, isCompleted: isSelected };
+                  return { ...value, status };
                 } else {
                   return value;
                 }
               })
             );
-            onSaveTodo({...taskData,isCompleted:isSelected})
+            onSaveTodo({...taskData,status})
           }}
         >
           {taskData.title}

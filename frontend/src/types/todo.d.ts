@@ -1,3 +1,5 @@
+import { TodoStatus } from "@/enum/TodoStatus";
+
 export type taskBoxProps = {
   todoId?: string;
   title?: string | undefined;
@@ -5,7 +7,7 @@ export type taskBoxProps = {
   fromDate?: CalendarDate | undefined;
   toDate?: CalendarDate | undefined;
   mode?: "new" | "edit";
-  isCompleted?: boolean;
+  status: TodoStatus
 };
 
 export type Todos = {

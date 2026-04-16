@@ -11,6 +11,8 @@ export default function ProfilePage({ data }: Props) {
   useEffect(() => {
     setTheme('light')
   }, []);
+  console.log("data")
+  console.log(data)
   return (
     <div>
       <main className="w-[90%] md:w-[70%] m-auto ">
