@@ -1,4 +1,4 @@
 export enum TodoStatus {
-    ACTIVE,
-    COMPLETED
+    ACTIVE = "ACTIVE",
+    COMPLETED = "COMPLETED"
 }

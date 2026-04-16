@@ -1,37 +1,10 @@
 "use client";
-import { taskBoxProps } from "@/types";
-import React, { useEffect, useState } from "react";
 import { IoAddOutline } from "react-icons/io5";
 import { useTodoStore } from "@/store/useTodoStore";
 
 function AddNewTask() {
-  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const setCurrentTodo = useTodoStore((s) => s.setCurrentTodo);
-
-  const wrappedSetTaskData: React.Dispatch<
-    React.SetStateAction<taskBoxProps>
-  > = (value) => {
-    const { currentTodo, setCurrentTodo } = useTodoStore.getState();
-
-    if (typeof value === "function") {
-      // It's an updater function: (prev) => newState
-      const newValue = (value as (prev: taskBoxProps) => taskBoxProps)(
-        currentTodo
-      );
-      setCurrentTodo(newValue);
-    } else {
-      // It's a direct value
-      setCurrentTodo(value);
-    }
-  };
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   return (
     <div className="cursor-pointer"

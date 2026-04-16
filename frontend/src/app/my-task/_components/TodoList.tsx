@@ -19,6 +19,8 @@ const TodoList: React.FC<TodoListProps> = ({
   allTodos,
   setAllTodos,
 }) => {
+  console.log(taskData);
+  
   return (
     <div
       className="flex flex-col sm:w-[40.8%] cursor-pointer"

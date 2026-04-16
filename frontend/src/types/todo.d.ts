@@ -7,7 +7,7 @@ export type taskBoxProps = {
   fromDate?: CalendarDate | undefined;
   toDate?: CalendarDate | undefined;
   mode?: "new" | "edit";
-  status: TodoStatus
+  status?: TodoStatus
 };
 
 export type Todos = {
