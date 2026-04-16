@@ -11,7 +11,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { isValidEmail } from "@/utils/validation";
 
 export default function Auth() {
-  const router = useRouter()
+  const router = useRouter();
   const [switchAuth, setSwitchAuth] = useState(true);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -20,22 +20,22 @@ export default function Auth() {
   const [forgotPassword, setForgotPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const setEmailToStore = useUserStore((s) => s.setEmail);
-  const {setTheme} = useTheme();
+  const { setTheme } = useTheme();
   const clearUserData = useUserStore((s) => s.clearUserData);
 
   async function handleSubmit() {
     setError(null);
     setIsLoading(true);
     NProgress.start();
-    if(!userName || userName.length <=0){
-      setError("Invalid Username");
-      return;
-    }
-    if(!password || password.length <= 0){
-      setError("Invalid Password");
-      return;
-    }
     try {
+      if (!userName || userName.length <= 0) {
+        setError("Invalid Username");
+        return;
+      }
+      if (!password || password.length <= 0) {
+        setError("Invalid Password");
+        return;
+      }
       if (switchAuth) {
         const response: loginResponse = await axios
           .post(`${process.env.host}/authenticate/login`, {
@@ -45,11 +45,11 @@ export default function Auth() {
           .then((res) => res.data);
         handleApiResponse(response);
       } else {
-        if(!email || email.length <=0){
+        if (!email || email.length <= 0) {
           setError("Invalid email");
           return;
         }
-        if(!isValidEmail(email)){
+        if (!isValidEmail(email)) {
           setEmail("Invalid Mail format");
           return;
         }
@@ -69,6 +69,7 @@ export default function Auth() {
         err?.message ||
         "Something went wrong. Please try again.";
       setError(message);
+    } finally {
       setIsLoading(false);
       NProgress.done();
     }
@@ -126,7 +127,10 @@ export default function Auth() {
           <ForgotPassword />
           <p className="text-center mt-6">
             Remember your password?{" "}
-            <b className="cursor-pointer" onClick={() => setForgotPassword(false)}>
+            <b
+              className="cursor-pointer"
+              onClick={() => setForgotPassword(false)}
+            >
               <u>Back to Login</u>
             </b>
           </p>
