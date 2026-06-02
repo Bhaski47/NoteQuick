@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+"overrides": {
+  "@internationalized/date": "3.12.0"
+},
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "NEXT_DISABLE_ESLINT=1 next build",
@@ -14,7 +17,7 @@
     "@heroui/input": "^2.2.9",
     "@heroui/react": "^2.2.9",
     "@heroui/tabs": "^2.2.29",
-    "@internationalized/date": "^3.12.0",
+    "@internationalized/date": "3.12.0",
     "autoprefixer": "^10.4.27",
     "axios": "^1.15.0",
     "framer-motion": "^12.38.0",
