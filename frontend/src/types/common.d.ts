@@ -1,4 +1,3 @@
-
 export type ActionButtonProps = {
   name: string;
   onClick: () => void;
@@ -17,20 +16,27 @@ export type NavigateButtonProps = {
 };
 
 export type DividerProps = {
-  className?: string | undefined
-}
+  className?: string | undefined;
+};
 
 export type InputButtonProps = {
-  buttonClassName?: string | undefined,
-  placeholder:string,
-  inputClassName?: string | undefined,
-  placeholderClassName?: string | undefined,
-  value?: string | undefined,
+  buttonClassName?: string | undefined;
+  placeholder: string;
+  inputClassName?: string | undefined;
+  placeholderClassName?: string | undefined;
+  value?: string | undefined;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  disabled?:boolean | undefined
-  customTheme?:string | undefined
-  inputType?:string | undefined
-}
+  disabled?: boolean | undefined;
+  customTheme?: string | undefined;
+  inputType?: string | undefined;
+};
 
+export type BasicTextInputType = {
+  placeholder: string;
+  value: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string | undefined;
+  submit: () => void;
+};
 
-export type Theme = 'light' | 'dark' | 'custom' | 'system';
+export type Theme = "light" | "dark" | "custom" | "system";

@@ -115,13 +115,13 @@ public class UserServiceImpl implements UserService{
     public void updateUserDetails(String token, UpdateUserDTO user) {
         UUID userId = UUID.fromString(jwtUtil.extractUserId(token));
         User u = userJpaRepo.findById(userId).orElseThrow(()-> new InvalidCredentialException("User not found"));
-        if (user.getName() != null)     u.setName(user.getName());
-        if (user.getDescription() != null) u.setDescription(user.getDescription());
-        if (user.getGender() != null)   u.setGender(user.getGender());
-        if (user.getBirthday() != null) u.setBirthday(user.getBirthday());
-        if (user.getCity() != null)     u.setCity(user.getCity());
-        if (user.getCountry() != null)  u.setCountry(user.getCountry());
-        if (user.getPhone() != null)    u.setPhone(user.getPhone());
+        if (user.getName() != null && !user.getName().isBlank())     u.setName(user.getName());
+        if (user.getDescription() != null && !user.getDescription().isBlank()) u.setDescription(user.getDescription());
+        if (user.getGender() != null && !user.getGender().isBlank())   u.setGender(user.getGender());
+        if (user.getBirthday() != null && !user.getBirthday().isBlank()) u.setBirthday(user.getBirthday());
+        if (user.getCity() != null && !user.getCity().isBlank())     u.setCity(user.getCity());
+        if (user.getCountry() != null && !user.getCountry().isBlank())  u.setCountry(user.getCountry());
+        if (user.getPhone() != null && !user.getPhone().isBlank())    u.setPhone(user.getPhone());
         userJpaRepo.save(u);
     }
 

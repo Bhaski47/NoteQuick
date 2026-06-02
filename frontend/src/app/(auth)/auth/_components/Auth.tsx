@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import NProgress from "nprogress";
 import { useTheme } from "@/context/ThemeContext";
 import { isValidEmail } from "@/utils/validation";
+import BasicTextInput from "./BasicTextInput";
 
 export default function Auth() {
   const router = useRouter();
@@ -167,22 +168,8 @@ export default function Auth() {
               </p>
             </div>
             <div className="flex flex-col gap-y-4 sm:w-[75%]">
-              <input
-                type="text"
-                className="border-0 border-b-2 border-b-black px-2 py-2 outline-none rounded-none sm:rounded-none"
-                placeholder="Username"
-                autoComplete="off"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-              />
-              <input
-                type="password"
-                className="border-0 border-b-2 border-b-black px-2 py-2 outline-none rounded-none sm:rounded-none mb-[7%]"
-                placeholder="Password"
-                autoComplete="off"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <BasicTextInput placeholder="Username" value={userName} onChange={(e) => setUserName(e.target.value)} submit={handleSubmit}/>
+              <BasicTextInput placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} submit={handleSubmit} className="mb-[7%]" />
               <ErrorBanner />
               <Button
                 isLoading={isLoading}
@@ -230,30 +217,9 @@ export default function Auth() {
               </p>
             </div>
             <div className="flex flex-col gap-y-4 sm:w-[75%]">
-              <input
-                type="text"
-                autoComplete="off"
-                className="border-0 border-b-2 border-b-black px-2 py-2 outline-none rounded-none sm:rounded-none"
-                placeholder="Username"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-              />
-              <input
-                type="text"
-                className="border-0 border-b-2 border-b-black px-2 py-2 outline-none rounded-none sm:rounded-none"
-                placeholder="Email"
-                autoComplete="false"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <input
-                type="password"
-                className="border-0 border-b-2 border-b-black px-2 py-2 outline-none rounded-none sm:rounded-none mb-[7%]"
-                placeholder="Password"
-                autoComplete="false"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <BasicTextInput placeholder="Username" value={userName} submit={handleSubmit} onChange={(e) => setUserName(e.target.value)} />
+              <BasicTextInput placeholder="Email" value={email} submit={handleSubmit} onChange={(e) => setEmail(e.target.value)} />
+              <BasicTextInput placeholder="Password" value={password} submit={handleSubmit} onChange={(e) => setPassword(e.target.value)} className="mb-[7%]" />
               <ErrorBanner />
               <Button
                 isLoading={isLoading}
