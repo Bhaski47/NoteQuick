@@ -4,11 +4,13 @@ import {
   getLocalTimeZone,
   now,
   parseDateTime,
+  toZoned,
+  ZonedDateTime,
 } from "@internationalized/date";
 
 const nowTime = now(getLocalTimeZone());
 export function toNoonISO(
-  date: CalendarDate | CalendarDateTime | string | undefined,
+  date: ZonedDateTime | CalendarDate | CalendarDateTime | string | undefined,
 ): string | undefined {
   if (!date) return undefined;
   if (typeof date === "string") {
@@ -31,11 +33,11 @@ export function toNoonISO(
 
 export function toCalendarDateTimeValue(
   value: string | undefined,
-): CalendarDateTime | undefined {
+): ZonedDateTime | undefined {
   if (!value) return undefined;
   try {
     const withTime = value.includes("T") ? value : `${value}T12:00:00`;
-    return parseDateTime(withTime);
+    return toZoned(parseDateTime(withTime), getLocalTimeZone());
   } catch {
     return undefined;
   }

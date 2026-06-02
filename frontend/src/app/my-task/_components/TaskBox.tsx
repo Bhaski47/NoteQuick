@@ -20,6 +20,7 @@ import {
   CalendarDateTime,
   today,
   now,
+  ZonedDateTime,
 } from "@internationalized/date";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
@@ -195,7 +196,7 @@ export default function TaskBox({
             todayNoon
           }
           onChange={(date) => {
-            const newFrom = date ?? todayNoon;
+            const newFrom = date ?? todayNoon as ZonedDateTime | CalendarDateTime;
             const currentTo =
               toCalendarDateTimeValue(taskData.toDate as string | undefined) ??
               todayNoon;
