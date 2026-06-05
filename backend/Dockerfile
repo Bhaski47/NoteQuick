@@ -1,6 +1,8 @@
 FROM eclipse-temurin:21-jdk-alpine AS builder
 WORKDIR /app
 COPY . .
+RUN cp src/main/resources/application.properties.example \
+       src/main/resources/application.properties
 RUN ./mvnw clean package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
