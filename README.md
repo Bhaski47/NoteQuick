@@ -1,145 +1,105 @@
 # NoteQuick
-A Full-Stack Productivity App for Tasks, Notes and Calendar Using Next.js and Spring Boot
+
+A full-stack productivity application for managing tasks, notes, and calendar events — built with Next.js and Spring Boot.
 
 ## Table of Contents
+
 - [Installation](#installation)
 - [Workflow](#workflow)
 - [Usage](#usage)
 - [Features](#features)
 
-# Installation
+---
 
-1. Clone the repository:
-    ```
-    git clone https://github.com/Bhaski47/NoteQuick
-    ```
+## Installation
 
-2. Navigate to the project folder:
-    ```
-    cd NoteQuick
-    ```
+**1. Clone the repository**
+```bash
+git clone https://github.com/Bhaski47/NoteQuick
+cd NoteQuick
+```
 
-3. Navigate to the frontend folder:
-    ```
-    cd frontend
-    ```
+**2. Install frontend dependencies**
+```bash
+cd frontend
+npm install
+```
 
-4. Navigate to the backend folder:
-    ```
-    cd backend
-    ```
+**3. Configure the backend**
+```bash
+cd backend
+cp application.properties.example src/main/resources/application.properties
+```
 
-5. Install frontend dependencies:
-    ```
-    npm install
-    ```
+Edit `application.properties` with your values:
 
-6. Set up the backend configuration:
-    - Copy the example properties file:
-        ```
-        cp application.properties.example src/main/resources/application.properties
-        ```
-    - Open `application.properties` and fill in the following values:
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DB_URL` | MySQL JDBC URL | `jdbc:mysql://localhost:3306/notequick` |
+| `DB_USER_NAME` | MySQL username | `root` |
+| `DB_PASSWORD` | MySQL password | `yourpassword` |
+| `JWT_SECRET` | Token signing secret | Any long random string |
+| `JWT_EXPIRATION` | Token TTL (ms) | `86400000` |
+| `SMTP_MAIL` | SMTP host | `smtp.gmail.com` |
+| `SMTP_PORT` | SMTP port | `587` |
+| `SMTP_USER` | Sender email | `you@gmail.com` |
+| `SMTP_PASSWORD` | Email app password | Your SMTP password |
 
-    | Variable | Description | Example |
-    |----------|-------------|---------|
-    | `DB_URL` | MySQL JDBC connection URL | `jdbc:mysql://localhost:3306/notequick` |
-    | `DB_USER_NAME` | MySQL username | `root` |
-    | `DB_PASSWORD` | MySQL password | `yourpassword` |
-    | `JWT_SECRET` | Secret key for signing tokens | Any long random string |
-    | `JWT_EXPIRATION` | Token expiry in milliseconds | `86400000` |
-    | `SMTP_MAIL` | SMTP host for email | `smtp.gmail.com` |
-    | `SMTP_PORT` | SMTP port | `587` |
-    | `SMTP_USER` | Sender email address | `you@gmail.com` |
-    | `SMTP_PASSWORD` | Email app password | Your SMTP password |
+**4. Configure the frontend**
+```bash
+touch .env.local
+```
 
-7. Set up the frontend environment:
-    - Create a `.env.local` file inside the `frontend/` folder:
-        ```
-        cp .env.local.example .env.local
-        ```
-    - Update the following values:
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NEXT_PUBLIC_API_URL` | Backend base URL | `http://localhost:8080` |
+| `JWT_SECRET` | Must match backend secret | Same value as backend |
 
-    | Variable | Description | Example |
-    |----------|-------------|---------|
-    | `NEXT_PUBLIC_API_URL` | Backend base URL | `http://localhost:8080` |
-    | `JWT_SECRET` | Must match the backend JWT secret | Same value as backend |
+**5. Create the database**
+```sql
+CREATE DATABASE notequick;
+```
 
-8. Create the MySQL database:
-    ```sql
-    CREATE DATABASE notequick;
-    ```
+**6. Run the application**
 
-9. Start the application:
-    - You need to start both the frontend and backend simultaneously.
-    - Start the backend from the `backend/` folder:
-        ```
-        ./mvnw spring-boot:run
-        ```
-    - Start the frontend from the `frontend/` folder:
-        ```
-        npm run dev
-        ```
+In separate terminals:
+```bash
+# Backend
+cd backend && ./mvnw spring-boot:run
 
-# Workflow
+# Frontend
+cd frontend && npm run dev
+```
 
-### 1. User Registration and Authentication
-- A new user registers with their username, email, and password.
-- On successful registration, the user receives a JWT token for authenticated access.
-- Returning users log in using their credentials to resume their session.
+App runs at `http://localhost:3000`.
 
-### 2. Task Management
-- The user creates tasks with a title, description, and a date range (from date and to date).
-- Tasks are listed in the dashboard and can be updated or marked as complete.
-- The system validates that the end date is always after the start date.
+---
 
-### 3. Calendar View
-- The user navigates to the calendar to see all scheduled tasks and events laid out by date.
-- Clicking on an event opens a detail view with full information.
+## Workflow
 
-### 4. Profile and Settings
-- The user can update their personal information and preferences from the settings page.
-- Changes are only saved when the user explicitly confirms, preventing accidental updates.
-- The user can disable their account, which anonymizes their data securely.
+**1. Authentication** — Register with a username, email, and password to receive a JWT token. Existing users log in to resume their session.
 
-# Usage
+**2. Task Management** — Create tasks with a title, description, and start/end date range. Tasks appear in both the dashboard list and the calendar. The system enforces that end dates must follow start dates.
 
-### 1. Register or Login:
-- Open the app at `http://localhost:3000`.
-- Register a new account or log in with existing credentials.
-- On login, you will be redirected to the main dashboard.
+**3. Calendar View** — Browse all scheduled tasks by date. Clicking any event opens a detailed view.
 
-### 2. Create a Task:
-- Navigate to the Tasks section from the sidebar.
-- Click **New Task** and fill in the title, description, and date range.
-- Save the task — it will appear in both the task list and the calendar.
+**4. Profile & Settings** — Update personal information from the settings page. Changes only persist on explicit confirmation. Users can also disable their account, which anonymizes their data and terminates the active session.
 
-### 3. View the Calendar:
-- Navigate to the Calendar section.
-- Browse tasks and events by month, week, or day view.
+---
 
-### 4. Manage Your Profile:
-- Navigate to the Profile page to view your stats and activity summary.
-- Go to Settings to update your name, email, phone, or other personal details.
+## Usage
 
-### 5. Account Settings:
-- From the Settings page, manage your account preferences.
-- To disable your account, use the account disable option — your unique details will be anonymized and your session will be terminated.
+1. **Register or Login** — Visit `http://localhost:3000`, create an account or sign in. You'll land on the main dashboard.
+2. **Create a Task** — Go to the Tasks section, click **New Task**, fill in the title, description, and date range, then save.
+3. **Calendar** — Navigate to the Calendar section to view tasks across month, week, or day layouts.
+4. **Profile** — Check your activity stats and summary from the Profile page.
+5. **Settings** — Update personal details or deactivate your account from the Settings page.
 
-# Features
+---
 
-1. **Task Management**
-   - Create, update, and delete tasks with title, description, and date ranges.
-   - Validates that the end date is always set after the start date.
+## Features
 
-2. **Calendar Integration**
-   - View all tasks and events on an interactive calendar.
-   - Supports month, week, and day views for flexible scheduling.
-
-3. **User Authentication**
-   - Secure registration and login using JWT-based authentication.
-   - Tokens are managed server-side with configurable expiration.
-
-4. **Multi-Page Dashboard**
-   - Dedicated pages for tasks, calendar, profile, and settings.
-   - Smooth navigation with animated transitions.
+- **Task Management** — Full CRUD for tasks with title, description, and date ranges. Enforces valid date ordering.
+- **Calendar Integration** — Interactive calendar with month, week, and day views showing all scheduled tasks.
+- **JWT Authentication** — Secure registration and login with server-side token management and configurable expiration.
+- **Multi-Page Dashboard** — Dedicated pages for tasks, calendar, profile, and settings with animated transitions.
