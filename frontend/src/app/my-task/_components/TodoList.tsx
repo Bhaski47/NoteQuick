@@ -19,7 +19,6 @@ const TodoList: React.FC<TodoListProps> = ({
   allTodos,
   setAllTodos,
 }) => {
-  console.log(taskData);
   
   return (
     <div

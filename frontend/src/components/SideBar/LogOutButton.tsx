@@ -1,4 +1,5 @@
 "use client";
+import { useTodoStore } from "@/store/useTodoStore";
 import { useUserStore } from "@/store/useUserStore";
 import {
   Button,
@@ -9,7 +10,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@heroui/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { MdOutlineLogout } from "react-icons/md";
 
 export default function LogOutButton() {
@@ -19,6 +20,8 @@ export default function LogOutButton() {
   };
   const email = useUserStore((s) => s.email);
   const clearUserData = useUserStore((s) => s.clearUserData);
+  const clearTodoData = useTodoStore( s => s.resetTodo);
+  const router = useRouter();
   return (
     <>
       <Button
@@ -50,7 +53,9 @@ export default function LogOutButton() {
                 </Button>
                 <Button color="primary" className="font-semibold" onPress={()=>{
                   clearUserData();
-                  redirect('/auth')
+                  clearTodoData();
+                  onClose();
+                  router.push('/auth')
                 }}>
                   Log Out
                 </Button>
