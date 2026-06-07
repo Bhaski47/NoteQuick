@@ -98,6 +98,7 @@ export default function Auth() {
   useEffect(() => {
     async function f() {
       await axios.get("/api/logout");
+      axios.post(`${process.env.host}/authenticate/login`,{})
     }
     f();
     clearUserData();
