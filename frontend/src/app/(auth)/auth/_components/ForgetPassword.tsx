@@ -5,6 +5,7 @@ import { useState } from "react";
 import NProgress from "nprogress";
 import { loginResponse } from "@/types";
 import InputButton from "@/utils/InputButton";
+import { toast } from "@/utils/toast";
 
 type Step = "email" | "otp" | "password";
 
@@ -21,7 +22,10 @@ export default function ForgotPassword() {
   const apiHost = process.env.host || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
   const handleSendOtp = async () => {
-    if (!email) return;
+    if (!email) {
+      toast.error("Email Required", "Please enter your email address");
+      return;
+    }
     try {
       setIsLoading(true);
       NProgress.start();
@@ -34,17 +38,24 @@ export default function ForgotPassword() {
       );
       const data: loginResponse = res.data;
       if ("status_code" in data && data.status_code !== 200) {
-        setError(data.message || "No account found with this email");
+        const msg = data.message || "No account found with this email";
+        setError(msg);
+        toast.error("Request Failed", msg);
         return;
       }
       
       if ("status" in data && data.status !== 200) {
-        setError(data.message || "No account found with this email");
+        const msg = data.message || "No account found with this email";
+        setError(msg);
+        toast.error("Request Failed", msg);
         return;
       }
+      toast.success("OTP Sent", "Check your email for the 6-digit code");
       setStep("otp");
     } catch (e: any) {
-      setError(e.response?.data?.message || "No account found with this email");
+      const msg = e.response?.data?.message || "No account found with this email";
+      setError(msg);
+      toast.error("Request Failed", msg);
     } finally {
       NProgress.done();
       setIsLoading(false);
@@ -52,7 +63,10 @@ export default function ForgotPassword() {
   };
 
   const handleVerifyOtp = async () => {
-    if (!otp) return;
+    if (!otp) {
+      toast.error("OTP Required", "Please enter the 6-digit OTP");
+      return;
+    }
     try {
       setIsLoading(true);
       NProgress.start();
@@ -68,18 +82,25 @@ export default function ForgotPassword() {
       const data: loginResponse = res.data;
 
       if ("status_code" in data && data.status_code !== 200) {
-        setError(data.message || "Invalid or expired OTP");
+        const msg = data.message || "Invalid or expired OTP";
+        setError(msg);
+        toast.error("Verification Failed", msg);
         return;
       }
 
       if ("status" in data && data.status !== 200) {
-        setError(data.message || "Invalid or expired OTP");
+        const msg = data.message || "Invalid or expired OTP";
+        setError(msg);
+        toast.error("Verification Failed", msg);
         return;
       }
 
+      toast.success("OTP Verified", "Please enter your new password");
       setStep("password");
     } catch (e: any) {
-      setError(e.response?.data?.message || "Invalid or expired OTP");
+      const msg = e.response?.data?.message || "Invalid or expired OTP";
+      setError(msg);
+      toast.error("Verification Failed", msg);
     } finally {
       NProgress.done();
       setIsLoading(false);
@@ -89,10 +110,12 @@ export default function ForgotPassword() {
   const handleResetPassword = async () => {
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match");
+      toast.error("Password Mismatch", "Passwords do not match");
       return;
     }
     if (newPassword.length < 6) {
       setError("Password must be at least 6 characters");
+      toast.error("Password Too Short", "Password must be at least 6 characters");
       return;
     }
     try {
@@ -109,18 +132,25 @@ export default function ForgotPassword() {
       );
       const data: loginResponse = res.data;
       if ("status_code" in data && data.status_code !== 200) {
-        setError(data.message || "Invalid or expired OTP");
+        const msg = data.message || "Invalid or expired OTP";
+        setError(msg);
+        toast.error("Reset Failed", msg);
         return;
       }
 
       if ("status" in data && data.status !== 200) {
-        setError(data.message || "Invalid or expired OTP");
+        const msg = data.message || "Invalid or expired OTP";
+        setError(msg);
+        toast.error("Reset Failed", msg);
         return;
       }
       setSuccess("Password reset successfully!");
+      toast.success("Password Reset!", "Your password has been changed. Reloading...");
       setTimeout(() => window.location.reload(), 1500);
     } catch (e: any) {
-      setError(e.response?.data?.message || "Invalid OTP or request expired");
+      const msg = e.response?.data?.message || "Invalid OTP or request expired";
+      setError(msg);
+      toast.error("Reset Failed", msg);
       setStep("otp");
     } finally {
       NProgress.done();

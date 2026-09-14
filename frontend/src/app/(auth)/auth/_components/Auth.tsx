@@ -10,6 +10,7 @@ import NProgress from "nprogress";
 import { useTheme } from "@/context/ThemeContext";
 import { isValidEmail } from "@/utils/validation";
 import BasicTextInput from "./BasicTextInput";
+import { toast } from "@/utils/toast";
 
 export default function Auth() {
   const router = useRouter();
@@ -39,10 +40,12 @@ export default function Auth() {
 
     if (!currentUserName || currentUserName.length <= 0) {
       setError("Invalid Username");
+      toast.error("Invalid Username", "Please enter your username");
       return;
     }
     if (!currentPassword || currentPassword.length <= 0) {
       setError("Invalid Password");
+      toast.error("Invalid Password", "Please enter your password");
       return;
     }
 
@@ -62,10 +65,12 @@ export default function Auth() {
         const currentEmail = (email || emailRef.current?.value || "").trim();
         if (!currentEmail || currentEmail.length <= 0) {
           setError("Invalid email");
+          toast.error("Invalid Email", "Please enter your email address");
           return;
         }
         if (!isValidEmail(currentEmail)) {
           setError("Invalid Mail format");
+          toast.error("Invalid Email", "Please enter a valid email format");
           return;
         }
         const response = await axios
@@ -84,6 +89,7 @@ export default function Auth() {
         err?.message ||
         "Something went wrong. Please try again.";
       setError(message);
+      toast.error(switchAuth ? "Login Failed" : "Sign Up Failed", message);
     } finally {
       setIsLoading(false);
       NProgress.done();
@@ -94,6 +100,7 @@ export default function Auth() {
     if ("status" in res) {
       const message = res.message || "An error occurred.";
       setError(message);
+      toast.error(switchAuth ? "Login Failed" : "Sign Up Failed", message);
       setIsLoading(false);
       NProgress.done();
     } else if ("other_message" in res) {
@@ -103,6 +110,11 @@ export default function Auth() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });
+      if (switchAuth) {
+        toast.success("Welcome Back!", "Logged in successfully");
+      } else {
+        toast.success("Account Created!", "Welcome to NoteQuick");
+      }
       setIsLoading(false);
       NProgress.done();
       router.replace("/my-task");
@@ -115,7 +127,7 @@ export default function Auth() {
     }
     f();
     clearUserData();
-    setTheme("system");
+    setTheme("light");
   }, []);
 
   useEffect(() => {

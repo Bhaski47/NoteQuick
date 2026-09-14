@@ -29,6 +29,7 @@ import { getLocalTimeZone } from "@internationalized/date";
 import { toCalendarDateTimeValue, toNoonISO } from "@/utils/FormatTime";
 import { LuTrash2, LuX } from "react-icons/lu";
 import NProgress from "nprogress";
+import { toast } from "@/utils/toast";
 
 export default function TaskBox({
   taskData,
@@ -43,6 +44,8 @@ export default function TaskBox({
   const initialTodo = useRef<taskBoxProps>({ ...taskData });
   const [hasChanges, setHasChanges] = useState(false);
   const setTodoListData = useTodoStore((s) => s.setAllTodos);
+  const statusFilter = useTodoStore((s) => s.statusFilter);
+  const sortOrder = useTodoStore((s) => s.sortOrder);
   const todayDate = today(getLocalTimeZone());
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -99,7 +102,7 @@ export default function TaskBox({
   const handleSave = async () => {
     try {
       if (!taskData.title?.trim()) {
-        alert("Invalid Title");
+        toast.warning("Title Required", "Please provide a title for your task");
         return;
       }
       setIsLoading(true);
@@ -120,12 +123,19 @@ export default function TaskBox({
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const todos = await getAllTodos();
+      const todos = await getAllTodos({
+        status: statusFilter,
+        order: sortOrder,
+      });
       if (todos) setTodoListData(todos as allTodos);
+      toast.success(
+        isNew ? "Task Created" : "Task Updated",
+        `"${taskData.title}" ${isNew ? "added to your list" : "saved successfully"}`
+      );
       setTaskData({});
     } catch (error) {
       console.error("Todo operation failed:", error);
-      alert("Something went wrong");
+      toast.error("Operation Failed", "Could not save task. Please try again.");
     } finally {
       NProgress.done();
       setIsLoading(false);
@@ -142,13 +152,17 @@ export default function TaskBox({
         { todoId: taskData.todoId },
         { headers: { Authorization: `Bearer ${token}` } },
       );
-      const todos = await getAllTodos();
+      const todos = await getAllTodos({
+        status: statusFilter,
+        order: sortOrder,
+      });
       if (todos) setTodoListData(todos as allTodos);
+      toast.success("Task Deleted", `"${taskData.title || "Task"}" has been deleted`);
       onClose();
       setTaskData({});
     } catch (error) {
       console.error("Delete failed:", error);
-      alert("Something went wrong");
+      toast.error("Delete Failed", "Could not delete task. Please try again.");
     } finally {
       NProgress.done();
       setIsLoading(false);

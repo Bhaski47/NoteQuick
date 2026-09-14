@@ -6,23 +6,19 @@ import { useTodoStore } from "@/store/useTodoStore";
 import { allTodos } from "@/types";
 import { Button } from "@heroui/react";
 import React, { useState } from "react";
-import {
-  IoCloseOutline,
-  IoSearchOutline,
-} from "react-icons/io5";
-
-type StatusFilter = "ALL" | "ACTIVE" | "COMPLETED";
+import { IoCloseOutline, IoSearchOutline } from "react-icons/io5";
 
 export default function SearchTodo() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [isLoading, setIsLoading] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
   const [lastSearchedTerm, setLastSearchedTerm] = useState("");
 
   const setAllTodos = useTodoStore((s) => s.setAllTodos);
+  const statusFilter = useTodoStore((s) => s.statusFilter);
+  const sortOrder = useTodoStore((s) => s.sortOrder);
 
-  const executeSearch = async (term: string, filter: StatusFilter) => {
+  const executeSearch = async (term: string) => {
     const trimmed = term.trim();
     if (!trimmed) {
       handleClear();
@@ -31,7 +27,7 @@ export default function SearchTodo() {
 
     try {
       setIsLoading(true);
-      const results = await searchTodos(trimmed, filter);
+      const results = await searchTodos(trimmed, statusFilter, sortOrder);
       if (results) {
         setAllTodos(results);
       }
@@ -45,14 +41,7 @@ export default function SearchTodo() {
   };
 
   const handleSearch = () => {
-    executeSearch(searchTerm, statusFilter);
-  };
-
-  const handleFilterChange = (filter: StatusFilter) => {
-    setStatusFilter(filter);
-    if (isSearched && searchTerm.trim()) {
-      executeSearch(searchTerm, filter);
-    }
+    executeSearch(searchTerm);
   };
 
   const handleClear = async () => {
@@ -61,7 +50,10 @@ export default function SearchTodo() {
     setLastSearchedTerm("");
     try {
       setIsLoading(true);
-      const originalTodos = await getAllTodos();
+      const originalTodos = await getAllTodos({
+        status: statusFilter,
+        order: sortOrder,
+      });
       if (originalTodos && !("redirect" in originalTodos)) {
         setAllTodos(originalTodos as allTodos);
       }
@@ -78,19 +70,9 @@ export default function SearchTodo() {
     }
   };
 
-  const filterOptions: {
-    label: string;
-    value: StatusFilter;
-    badgeColor?: string;
-  }[] = [
-    { label: "All Tasks", value: "ALL" },
-    { label: "Pending", value: "ACTIVE", badgeColor: "bg-amber-500" },
-    { label: "Completed", value: "COMPLETED", badgeColor: "bg-emerald-500" },
-  ];
-
   return (
-    <div className="w-full my-2 flex flex-col gap-2.5">
-      {/* Sleek Search Input Container */}
+    <div className="w-full my-2 flex flex-col gap-2">
+      {/* Search Input Container */}
       <div
         className="w-full flex items-center gap-2 p-1 pl-3.5 rounded-xl border border-light-borderPrimary dark:border-dark-borderPrimary 
         bg-white/80 dark:bg-[#1a1b20]/90 backdrop-blur-md shadow-sm transition-all duration-200
@@ -133,49 +115,6 @@ export default function SearchTodo() {
         </Button>
       </div>
 
-      {/* Filter Chips Toolbar */}
-      <div className="flex items-center justify-between flex-wrap gap-2 px-0.5">
-        <div className="flex items-center gap-1.5 p-1 rounded-lg bg-zinc-200/50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-800/60">
-          {filterOptions.map((option) => {
-            const isSelected = statusFilter === option.value;
-            return (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => handleFilterChange(option.value)}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all duration-150 cursor-pointer ${
-                  isSelected
-                    ? "bg-white dark:bg-[#2b2c34] text-light-textPrimary dark:text-dark-textPrimary shadow-sm font-semibold"
-                    : "text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary"
-                }`}
-              >
-                {option.badgeColor ? (
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${option.badgeColor}`}
-                  />
-                ) : (
-                  <span className="flex gap-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500/80" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80" />
-                  </span>
-                )}
-                {option.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {isSearched && (
-          <button
-            type="button"
-            onClick={handleClear}
-            className="text-xs text-light-textSecondary hover:text-red-500 dark:text-dark-textSecondary dark:hover:text-red-400 font-medium transition-colors cursor-pointer"
-          >
-            Reset
-          </button>
-        )}
-      </div>
-
       {/* Active Search Badge */}
       {isSearched && (
         <div
@@ -188,9 +127,6 @@ export default function SearchTodo() {
             <span className="w-1.5 h-1.5 rounded-full bg-light-buttonPrimary dark:bg-dark-buttonPrimary shrink-0 animate-pulse" />
             <span className="truncate">
               Results for: <b className="font-semibold">&quot;{lastSearchedTerm}&quot;</b>
-              <span className="opacity-70 ml-1">
-                ({statusFilter === "ALL" ? "All" : statusFilter === "ACTIVE" ? "Pending" : "Completed"})
-              </span>
             </span>
           </div>
           <button

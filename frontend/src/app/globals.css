@@ -19,7 +19,11 @@
   outline: none !important;
 }
 
-/* Prevent Chrome / Safari / WebKit yellow and blue background on autocomplete/autofill */
+/* Prevent yellow, blue, or dark background on autocomplete/autofill in Chrome, Firefox, Safari */
+input:autofill,
+input:autofill:hover,
+input:autofill:focus,
+input:autofill:active,
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -28,9 +32,15 @@ input:-webkit-autofill:active {
   box-shadow: 0 0 0 1000px #ffffff inset !important;
   -webkit-text-fill-color: #333232 !important;
   caret-color: #333232 !important;
+  filter: none !important;
   transition: background-color 5000000s ease-in-out 0s;
 }
 
+/* Dark mode autofill (only when not within a light container) */
+.dark input:autofill,
+.dark input:autofill:hover,
+.dark input:autofill:focus,
+.dark input:autofill:active,
 .dark input:-webkit-autofill,
 .dark input:-webkit-autofill:hover,
 .dark input:-webkit-autofill:focus,
@@ -39,6 +49,33 @@ input:-webkit-autofill:active {
   box-shadow: 0 0 0 1000px #202127 inset !important;
   -webkit-text-fill-color: #EDEDED !important;
   caret-color: #EDEDED !important;
+  filter: none !important;
+  transition: background-color 5000000s ease-in-out 0s;
+}
+
+/* Force light autofill inside .light containers even if <html> has .dark */
+.light input:autofill,
+.light input:autofill:hover,
+.light input:autofill:focus,
+.light input:autofill:active,
+.light input:-webkit-autofill,
+.light input:-webkit-autofill:hover,
+.light input:-webkit-autofill:focus,
+.light input:-webkit-autofill:active,
+html.dark .light input:autofill,
+html.dark .light input:autofill:hover,
+html.dark .light input:autofill:focus,
+html.dark .light input:autofill:active,
+html.dark .light input:-webkit-autofill,
+html.dark .light input:-webkit-autofill:hover,
+html.dark .light input:-webkit-autofill:focus,
+html.dark .light input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #333232 !important;
+  caret-color: #333232 !important;
+  color: #333232 !important;
+  filter: none !important;
   transition: background-color 5000000s ease-in-out 0s;
 }
 

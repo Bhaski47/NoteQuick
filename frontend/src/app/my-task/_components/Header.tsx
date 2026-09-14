@@ -1,6 +1,7 @@
 import Divider from "@/utils/Divider";
 import AddNewTask from "./AddNewTask";
 import SearchTodo from "./SearchTodo";
+import TaskFilter from "./TaskFilter";
 
 export default function Header() {
   return (
@@ -10,6 +11,7 @@ export default function Header() {
           TO DO&apos;S
         </h1>
         <SearchTodo />
+        <TaskFilter />
         <Divider className="my-2 w-full" />
         <AddNewTask />
         <Divider className="my-2 w-full" />

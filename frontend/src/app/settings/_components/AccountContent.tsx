@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "@/utils/toast";
 
 interface UserIconProps {
   fill?: string;
@@ -90,11 +91,13 @@ export default function AccountContent({ userDetails }: TabNavigateProps) {
       clearUserData();
       clearTodoData();
 
+      toast.info("Account Deleted", "Your account and data have been removed");
       onClose();
       router.replace("/auth");
       router.refresh();
     } catch (error) {
       console.error("Failed to delete account:", error);
+      toast.error("Failed", "Could not delete account. Please try again.");
     } finally {
       setIsDeleting(false);
     }

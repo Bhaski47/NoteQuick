@@ -22,6 +22,7 @@ export default function BasicTextInput({
   return (
     <div
       onKeyDown={(k) => k.key === "Enter" && submit()}
+      style={{ colorScheme: "light" }}
       className={`w-full border-0 border-b-2 border-b-black px-2 py-2 outline-none rounded-none sm:rounded-none flex justify-between ${className ?? ""}`}
     >
       <input
@@ -33,11 +34,12 @@ export default function BasicTextInput({
         autoComplete={autoComplete}
         value={value}
         onChange={onChange}
-        className="w-full bg-transparent outline-none"
+        style={{ colorScheme: "light" }}
+        className="w-full bg-transparent text-light-textPrimary placeholder:text-[#8C8C8C] outline-none"
       />
       {isPassword && (
         <div
-          className="self-end cursor-pointer"
+          className="self-end cursor-pointer text-light-textPrimary"
           onClick={() => setShowPassword((prev) => !prev)}
         >
           {showPassword ? <FaRegEye size={18} /> : <FaRegEyeSlash size={18} />}

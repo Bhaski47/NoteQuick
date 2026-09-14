@@ -7,6 +7,7 @@ import com.notequick.backend.repository.TodoJpaRepo;
 import com.notequick.backend.repository.UserJpaRepo;
 import com.notequick.backend.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -39,9 +40,11 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public List<Todo> getTodo(String token) {
-        UUID userId = UUID.fromString(jwtUtil.extractUserId(token));
-        return todoJpaRepo.findByUserIdAndStatusNot(userId.toString(),TodoStatus.REMOVED);
+    public List<Todo> getTodo(String token, String status, String order) {
+        String userId = jwtUtil.extractUserId(token);
+        List<TodoStatus> statuses = resolveStatuses(status);
+        Sort sort = resolveSort(order);
+        return todoJpaRepo.findByUserIdAndStatusIn(userId, statuses, sort);
     }
 
     @Override
@@ -49,18 +52,31 @@ public class TodoServiceImpl implements TodoService {
         todoJpaRepo.save(todo);
     }
 
-    @Override
-    public List<Todo> searchTodo(String token, String todo, String status) throws Exception {
-        if (todo == null || todo.trim().isEmpty()) {
-            return Collections.emptyList();
-        }
-        String userId = jwtUtil.extractUserId(token);
-        List<TodoStatus> statuses = switch (status != null ? status.toUpperCase() : "ALL") {
+    private List<TodoStatus> resolveStatuses(String status) {
+        return switch (status != null ? status.toUpperCase() : "ALL") {
             case "PENDING", "ACTIVE" -> List.of(TodoStatus.ACTIVE);
             case "DONE", "COMPLETED" -> List.of(TodoStatus.COMPLETED);
             default -> List.of(TodoStatus.ACTIVE, TodoStatus.COMPLETED);
         };
-        return todoJpaRepo.searchTodos(userId, todo.trim(), statuses);
+    }
+
+    private Sort resolveSort(String order) {
+        // Defaults to DESC (newest first)
+        if ("ASC".equalsIgnoreCase(order)) {
+            return Sort.by(Sort.Direction.ASC, "fromDate");
+        }
+        return Sort.by(Sort.Direction.DESC, "fromDate");
+    }
+
+    @Override
+    public List<Todo> searchTodo(String token, String todo, String status, String order) throws Exception {
+        if (todo == null || todo.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        String userId = jwtUtil.extractUserId(token);
+        List<TodoStatus> statuses = resolveStatuses(status);
+        Sort sort = resolveSort(order);
+        return todoJpaRepo.searchTodos(userId, todo.trim(), statuses, sort);
     }
 
     @Override

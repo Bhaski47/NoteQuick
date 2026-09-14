@@ -15,6 +15,7 @@ import NProgress from "nprogress";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { MdOutlineLogout } from "react-icons/md";
+import { toast } from "@/utils/toast";
  
 export default function LogOutButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,6 +38,8 @@ export default function LogOutButton() {
       onClose();
       NProgress.start();
 
+      toast.info("Logged Out", "You have been signed out successfully");
+
       await axios.get("/api/logout").catch((err) => {
         console.warn("Logout endpoint warning:", err);
       });
@@ -45,11 +48,12 @@ export default function LogOutButton() {
       clearTodoData();
 
       // Brief delay so the user perceives the smooth signing-out transition
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 600));
 
       window.location.replace("/auth");
     } catch (error) {
       console.error("Logout error:", error);
+      toast.error("Logout Failed", "An error occurred while logging out");
       setIsLoggingOut(false);
       NProgress.done();
     }

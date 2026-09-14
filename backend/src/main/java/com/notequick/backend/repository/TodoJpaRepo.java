@@ -3,6 +3,7 @@ package com.notequick.backend.repository;
 import com.notequick.backend.dto.calendar.AllCalendarResponseDTO;
 import com.notequick.backend.entity.Todo;
 import com.notequick.backend.enums.TodoStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,7 +25,7 @@ public interface TodoJpaRepo extends JpaRepository<Todo, UUID> {
                                                                  @Param("toDate") LocalDateTime toDate,
                                                                  @Param("userId") String userId);
 
-    List<Todo> findByUserIdAndStatusNot(String userId, TodoStatus status);
+    List<Todo> findByUserIdAndStatusIn(String userId, List<TodoStatus> statuses, Sort sort);
 
     @Query("SELECT t FROM Todo t WHERE t.userId = :userId " +
             "AND t.status IN :statuses " +
@@ -33,6 +34,7 @@ public interface TodoJpaRepo extends JpaRepository<Todo, UUID> {
     List<Todo> searchTodos(
             @Param("userId") String userId,
             @Param("query") String query,
-            @Param("statuses") List<TodoStatus> statuses
+            @Param("statuses") List<TodoStatus> statuses,
+            Sort sort
     );
 }

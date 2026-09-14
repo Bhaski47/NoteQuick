@@ -22,8 +22,11 @@ public class TodoController {
     private TodoService todoService;
 
     @PostMapping("/getTodos")
-    public ResponseEntity<HashMap<String,Object>> getTodos(@RequestHeader(value = "Authorization",defaultValue = "") String token) {
-        List<Todo> response = todoService.getTodo(token);
+    public ResponseEntity<HashMap<String,Object>> getTodos(@RequestHeader(value = "Authorization",defaultValue = "") String token,
+                                                           @RequestBody(required = false) Map<String, String> requestBody) {
+        String status = (requestBody != null) ? requestBody.getOrDefault("status", "ALL") : "ALL";
+        String order = (requestBody != null) ? requestBody.getOrDefault("order", "DESC") : "DESC";
+        List<Todo> response = todoService.getTodo(token, status, order);
         LinkedHashMap<String,Object> res = new LinkedHashMap<>();
         res.put("status", HttpStatus.OK.value());
         res.put("message", "Todo Acquired Successfully");
@@ -60,7 +63,8 @@ public class TodoController {
                                                              @RequestBody Map<String, String> requestBody) throws Exception {
         String query = requestBody.getOrDefault("query", "");
         String status = requestBody.getOrDefault("status", "ALL");
-        List<Todo> response = todoService.searchTodo(token, query, status);
+        String order = requestBody.getOrDefault("order", "DESC");
+        List<Todo> response = todoService.searchTodo(token, query, status, order);
         LinkedHashMap<String,Object> res = new LinkedHashMap<>();
         res.put("status", HttpStatus.OK.value());
         res.put("message", "Search results acquired successfully");

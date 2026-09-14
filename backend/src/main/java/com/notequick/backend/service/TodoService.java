@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TodoService {
 
-    List<Todo> getTodo(String token);
+    List<Todo> getTodo(String token, String status, String order);
 
     void addTodo(String token,Todo todo) throws InvalidCredentialException,Exception;
 
@@ -16,6 +16,6 @@ public interface TodoService {
 
     void updateTodo(String token, Todo todo) throws Exception;
 
-    List<Todo> searchTodo(String token, String query, String status) throws Exception;
+    List<Todo> searchTodo(String token, String query, String status, String order) throws Exception;
 
 }

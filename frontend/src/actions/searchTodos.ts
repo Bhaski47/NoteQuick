@@ -5,7 +5,8 @@ import { cookies } from "next/headers";
 
 export async function searchTodos(
   query: string,
-  status: string = "ALL"
+  status: string = "ALL",
+  order: "DESC" | "ASC" = "DESC"
 ): Promise<allTodos | null> {
   try {
     const token = (await cookies()).get("token")?.value;
@@ -19,7 +20,7 @@ export async function searchTodos(
 
     const res = await axios.post(
       `${apiHost}/todos/searchTodo`,
-      { query, status },
+      { query, status, order },
       {
         headers: {
           Authorization: `Bearer ${token}`,

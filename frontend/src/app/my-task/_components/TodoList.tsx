@@ -5,6 +5,7 @@ import Divider from "@/utils/Divider";
 import { allTodos, taskBoxProps } from "@/types";
 import { onSaveTodo } from "@/actions/onSaveTodo";
 import { TodoStatus } from "@/enum/TodoStatus";
+import { toast } from "@/utils/toast";
 
 interface TodoListProps {
   taskData: taskBoxProps;
@@ -32,6 +33,11 @@ const TodoList: React.FC<TodoListProps> = ({
           isSelected={taskData?.status === TodoStatus.COMPLETED}
           onValueChange={async (isSelected) => {
             const status = isSelected ? TodoStatus.COMPLETED : TodoStatus.ACTIVE;
+            if (isSelected) {
+              toast.success("Task Completed", `"${taskData.title}" marked as completed`);
+            } else {
+              toast.info("Task Reopened", `"${taskData.title}" marked as active`);
+            }
             setAllTodos(
               allTodos.map((value) => {
                 if (value.todoId === taskData.todoId) {
