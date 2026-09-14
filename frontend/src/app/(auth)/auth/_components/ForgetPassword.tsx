@@ -18,6 +18,8 @@ export default function ForgotPassword() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const apiHost = process.env.host || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
   const handleSendOtp = async () => {
     if (!email) return;
     try {
@@ -25,7 +27,7 @@ export default function ForgotPassword() {
       NProgress.start();
       setError("");
       const res = await axios.post(
-        `${process.env.host}/authenticate/forgot-password`,
+        `${apiHost}/authenticate/forgot-password`,
         {
           email,
         },
@@ -56,7 +58,7 @@ export default function ForgotPassword() {
       NProgress.start();
       setError("");
       const res = await axios.post(
-        `${process.env.host}/authenticate/verify-otp`,
+        `${apiHost}/authenticate/verify-otp`,
         {
           email,
           otp,
@@ -98,7 +100,7 @@ export default function ForgotPassword() {
       NProgress.start();
       setError("");
       const res = await axios.post(
-        `${process.env.host}/authenticate/reset-password`,
+        `${apiHost}/authenticate/reset-password`,
         {
           email,
           otp,

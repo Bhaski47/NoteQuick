@@ -37,6 +37,11 @@ export type BasicTextInputType = {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string | undefined;
   submit: () => void;
+  name?: string;
+  id?: string;
+  autoComplete?: string;
+  inputRef?: React.Ref<HTMLInputElement>;
+  type?: string;
 };
 
 export type Theme = "light" | "dark" | "custom" | "system";

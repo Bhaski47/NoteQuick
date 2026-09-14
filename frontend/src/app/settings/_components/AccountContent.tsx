@@ -1,4 +1,6 @@
 import { TabNavigateProps } from "@/types";
+import { useTodoStore } from "@/store/useTodoStore";
+import { useUserStore } from "@/store/useUserStore";
 import Divider from "@/utils/Divider";
 import InputButton from "@/utils/InputButton";
 import {
@@ -11,8 +13,8 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import axios from "axios";
-import { redirect } from "next/navigation";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 interface UserIconProps {
   fill?: string;
@@ -60,6 +62,44 @@ const UserIcon: React.FC<UserIconProps> = ({
 
 export default function AccountContent({ userDetails }: TabNavigateProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const clearUserData = useUserStore((s) => s.clearUserData);
+  const clearTodoData = useTodoStore((s) => s.resetTodo);
+
+  const handleDeleteAccount = async () => {
+    try {
+      setIsDeleting(true);
+      const token = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("token="))
+        ?.split("=")[1];
+
+      const apiHost = process.env.host || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
+      await axios.delete(
+        `${apiHost}/user/deleteUser`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      await axios.get("/api/logout").catch(() => {});
+      clearUserData();
+      clearTodoData();
+
+      onClose();
+      router.replace("/auth");
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to delete account:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <main className="flex flex-col w-full sm:w-full overflow-hidden">
       <div className="w-2/3 py-8 px-4 sm:px-8">
@@ -79,9 +119,15 @@ export default function AccountContent({ userDetails }: TabNavigateProps) {
         >
           Delete Account
         </Button>
-        <Modal isOpen={isOpen} onClose={onClose} backdrop="blur">
+        <Modal
+          isOpen={isOpen}
+          onClose={!isDeleting ? onClose : undefined}
+          isDismissable={!isDeleting}
+          hideCloseButton={isDeleting}
+          backdrop="blur"
+        >
           <ModalContent>
-            {(onClose) => (
+            {(handleClose) => (
               <>
                 <ModalHeader className="text-danger">
                   Delete Account
@@ -97,34 +143,20 @@ export default function AccountContent({ userDetails }: TabNavigateProps) {
                 <ModalFooter>
                   <Button
                     variant="light"
-                    onPress={onClose}
+                    isDisabled={isDeleting}
+                    onPress={handleClose}
                     style={{ fontWeight: "bolder" }}
                   >
                     Cancel
                   </Button>
                   <Button
                     color="danger"
-                    onPress={async () => {
-                      const token = document.cookie
-                        .split("; ")
-                        .find((row) => row.startsWith("token="))
-                        ?.split("=")[1];
-
-                      await axios.delete(
-                        `${process.env.host}/user/deleteUser`,
-                        {
-                          headers: {
-                            Authorization: `Bearer ${token}`,
-                          },
-                        },
-                      );
-
-                      redirect("/auth");
-                      onClose();
-                    }}
+                    isLoading={isDeleting}
+                    isDisabled={isDeleting}
+                    onPress={handleDeleteAccount}
                     style={{ fontWeight: "bolder" }}
                   >
-                    Confirm Delete
+                    {isDeleting ? "Deleting..." : "Confirm Delete"}
                   </Button>
                 </ModalFooter>
               </>

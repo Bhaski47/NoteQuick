@@ -17,6 +17,9 @@ export default function Auth() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
+  const userNameRef = React.useRef<HTMLInputElement>(null);
+  const passwordRef = React.useRef<HTMLInputElement>(null);
+  const emailRef = React.useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,44 +27,55 @@ export default function Auth() {
   const { setTheme } = useTheme();
   const clearUserData = useUserStore((s) => s.clearUserData);
 
-  async function handleSubmit() {
+  async function handleSubmit(e?: React.FormEvent | any) {
+    if (e && typeof e.preventDefault === "function") {
+      e.preventDefault();
+    }
+    if (isLoading) return;
     setError(null);
+
+    const currentUserName = (userName || userNameRef.current?.value || "").trim();
+    const currentPassword = password || passwordRef.current?.value || "";
+
+    if (!currentUserName || currentUserName.length <= 0) {
+      setError("Invalid Username");
+      return;
+    }
+    if (!currentPassword || currentPassword.length <= 0) {
+      setError("Invalid Password");
+      return;
+    }
+
     setIsLoading(true);
     NProgress.start();
+    const apiHost = process.env.host || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
     try {
-      if (!userName || userName.length <= 0) {
-        setError("Invalid Username");
-        return;
-      }
-      if (!password || password.length <= 0) {
-        setError("Invalid Password");
-        return;
-      }
       if (switchAuth) {
         const response: loginResponse = await axios
-          .post(`${process.env.host}/authenticate/login`, {
-            identifier: userName,
-            password,
+          .post(`${apiHost}/authenticate/login`, {
+            identifier: currentUserName,
+            password: currentPassword,
           })
           .then((res) => res.data);
         handleApiResponse(response);
       } else {
-        if (!email || email.length <= 0) {
+        const currentEmail = (email || emailRef.current?.value || "").trim();
+        if (!currentEmail || currentEmail.length <= 0) {
           setError("Invalid email");
           return;
         }
-        if (!isValidEmail(email)) {
+        if (!isValidEmail(currentEmail)) {
           setError("Invalid Mail format");
           return;
         }
         const response = await axios
-          .post(`${process.env.host}/authenticate/register`, {
-            username: userName,
-            email,
-            password,
+          .post(`${apiHost}/authenticate/register`, {
+            username: currentUserName,
+            email: currentEmail,
+            password: currentPassword,
           })
           .then((res) => res.data);
-        setEmailToStore(email);
+        setEmailToStore(currentEmail);
         handleApiResponse(response);
       }
     } catch (err: any) {
@@ -91,14 +105,13 @@ export default function Auth() {
       });
       setIsLoading(false);
       NProgress.done();
-      router.push("/my-task");
+      router.replace("/my-task");
     }
   }
 
   useEffect(() => {
     async function f() {
       await axios.get("/api/logout");
-      axios.post(`${process.env.host}/authenticate/login`,{})
     }
     f();
     clearUserData();
@@ -106,10 +119,35 @@ export default function Auth() {
   }, []);
 
   useEffect(() => {
+    const syncAutofill = () => {
+      if (userNameRef.current?.value && !userName) {
+        setUserName(userNameRef.current.value);
+      }
+      if (passwordRef.current?.value && !password) {
+        setPassword(passwordRef.current.value);
+      }
+      if (!switchAuth && emailRef.current?.value && !email) {
+        setEmail(emailRef.current.value);
+      }
+    };
+
+    const t1 = setTimeout(syncAutofill, 100);
+    const t2 = setTimeout(syncAutofill, 500);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [switchAuth, userName, password, email]);
+
+  useEffect(() => {
     setEmail("");
     setPassword("");
     setUserName("");
     setError(null);
+    if (userNameRef.current) userNameRef.current.value = "";
+    if (passwordRef.current) passwordRef.current.value = "";
+    if (emailRef.current) emailRef.current.value = "";
   }, [switchAuth]);
 
   const ErrorBanner = () =>
@@ -168,14 +206,29 @@ export default function Auth() {
                 It’s free takes less than a minute.
               </p>
             </div>
-            <div className="flex flex-col gap-y-4 sm:w-[75%]">
-              <BasicTextInput placeholder="Username" value={userName} onChange={(e) => setUserName(e.target.value)} submit={handleSubmit}/>
-              <BasicTextInput placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} submit={handleSubmit} className="mb-[7%]" />
+            <form onSubmit={handleSubmit} className="flex flex-col gap-y-4 sm:w-[75%]">
+              <BasicTextInput
+                name="username"
+                inputRef={userNameRef}
+                placeholder="Username"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                submit={handleSubmit}
+              />
+              <BasicTextInput
+                name="password"
+                inputRef={passwordRef}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                submit={handleSubmit}
+                className="mb-[7%]"
+              />
               <ErrorBanner />
               <Button
+                type="submit"
                 isLoading={isLoading}
                 isDisabled={isLoading}
-                onPress={handleSubmit}
                 className="justify-center w-full py-3.5 mb-6 text-white rounded-md bg-light-buttonPrimary hover:bg-buttonHover"
               >
                 Login Now
@@ -189,7 +242,7 @@ export default function Auth() {
                   <u> Click here</u>
                 </b>
               </p>
-            </div>
+            </form>
           </main>
         </div>
       ) : (
@@ -217,20 +270,45 @@ export default function Auth() {
                 It’s free takes less than a minute.
               </p>
             </div>
-            <div className="flex flex-col gap-y-4 sm:w-[75%]">
-              <BasicTextInput placeholder="Username" value={userName} submit={handleSubmit} onChange={(e) => setUserName(e.target.value)} />
-              <BasicTextInput placeholder="Email" value={email} submit={handleSubmit} onChange={(e) => setEmail(e.target.value)} />
-              <BasicTextInput placeholder="Password" value={password} submit={handleSubmit} onChange={(e) => setPassword(e.target.value)} className="mb-[7%]" />
+            <form onSubmit={handleSubmit} className="flex flex-col gap-y-4 sm:w-[75%]">
+              <BasicTextInput
+                name="username"
+                autoComplete="username"
+                inputRef={userNameRef}
+                placeholder="Username"
+                value={userName}
+                submit={handleSubmit}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+              <BasicTextInput
+                name="email"
+                autoComplete="email"
+                inputRef={emailRef}
+                placeholder="Email"
+                value={email}
+                submit={handleSubmit}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <BasicTextInput
+                name="password"
+                autoComplete="new-password"
+                inputRef={passwordRef}
+                placeholder="Password"
+                value={password}
+                submit={handleSubmit}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mb-[7%]"
+              />
               <ErrorBanner />
               <Button
+                type="submit"
                 isLoading={isLoading}
                 isDisabled={isLoading}
-                onPress={handleSubmit}
                 className="justify-center w-full py-3.5 mb-6 text-white rounded-md bg-light-buttonPrimary hover:bg-buttonHover"
               >
                 Sign Up Now
               </Button>
-            </div>
+            </form>
           </main>
         </div>
       )}

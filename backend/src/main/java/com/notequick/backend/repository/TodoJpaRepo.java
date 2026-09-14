@@ -25,4 +25,14 @@ public interface TodoJpaRepo extends JpaRepository<Todo, UUID> {
                                                                  @Param("userId") String userId);
 
     List<Todo> findByUserIdAndStatusNot(String userId, TodoStatus status);
+
+    @Query("SELECT t FROM Todo t WHERE t.userId = :userId " +
+            "AND t.status IN :statuses " +
+            "AND (LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "  OR LOWER(t.description) LIKE LOWER(CONCAT('%', :query, '%')))")
+    List<Todo> searchTodos(
+            @Param("userId") String userId,
+            @Param("query") String query,
+            @Param("statuses") List<TodoStatus> statuses
+    );
 }

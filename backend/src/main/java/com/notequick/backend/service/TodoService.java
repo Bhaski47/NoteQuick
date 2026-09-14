@@ -16,4 +16,6 @@ public interface TodoService {
 
     void updateTodo(String token, Todo todo) throws Exception;
 
+    List<Todo> searchTodo(String token, String query, String status) throws Exception;
+
 }

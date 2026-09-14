@@ -7,10 +7,23 @@ import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import NameBox from "./NameBox";
 import LogOutButton from "./LogOutButton";
 import { useUserStore } from "@/store/useUserStore";
+import { usePathname } from "next/navigation";
 
 export default function SideBar() {
   const [open, setOpen] = useState(false);
   const { userName } = useUserStore();
+  const pathname = usePathname() || "";
+
+  const hideSideBar =
+    pathname === "/" ||
+    pathname === "/auth" ||
+    pathname.startsWith("/auth/") ||
+    pathname.startsWith("/user/");
+
+  if (hideSideBar) {
+    return null;
+  }
+
   return (
     <div className={`${userName && userName.length > 1 ? "block" : "hidden"}`}>
       <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b dark:border-dark-borderDivider">

@@ -55,4 +55,17 @@ public class TodoController {
         return new ResponseEntity<>(http, HttpStatus.OK);
     }
 
+    @PostMapping("/searchTodo")
+    public ResponseEntity<HashMap<String,Object>> searchTodo(@RequestHeader(value = "Authorization",defaultValue = "") String token,
+                                                             @RequestBody Map<String, String> requestBody) throws Exception {
+        String query = requestBody.getOrDefault("query", "");
+        String status = requestBody.getOrDefault("status", "ALL");
+        List<Todo> response = todoService.searchTodo(token, query, status);
+        LinkedHashMap<String,Object> res = new LinkedHashMap<>();
+        res.put("status", HttpStatus.OK.value());
+        res.put("message", "Search results acquired successfully");
+        res.put("data", response);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
 }

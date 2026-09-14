@@ -50,6 +50,20 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
+    public List<Todo> searchTodo(String token, String todo, String status) throws Exception {
+        if (todo == null || todo.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        String userId = jwtUtil.extractUserId(token);
+        List<TodoStatus> statuses = switch (status != null ? status.toUpperCase() : "ALL") {
+            case "PENDING", "ACTIVE" -> List.of(TodoStatus.ACTIVE);
+            case "DONE", "COMPLETED" -> List.of(TodoStatus.COMPLETED);
+            default -> List.of(TodoStatus.ACTIVE, TodoStatus.COMPLETED);
+        };
+        return todoJpaRepo.searchTodos(userId, todo.trim(), statuses);
+    }
+
+    @Override
     public void deleteTodo(String token, String todoId) throws Exception {
         try{
             Todo todo = todoJpaRepo.findById(UUID.fromString(todoId))
