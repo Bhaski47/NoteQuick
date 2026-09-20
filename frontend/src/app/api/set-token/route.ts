@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       value: token,
       sameSite: 'strict',
       path: '/',
-      maxAge: 86400000,
+      maxAge: 86400,
     });
 
     return response;

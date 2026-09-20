@@ -12,11 +12,38 @@ export async function getCalendarDetails(
     if (!token) {
       return { redirect: "/auth" };
     }
-    let res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/calendar/getCalendarDetails`,
+    const apiHost =
+      process.env.NEXT_PUBLIC_API_URL ||
+      process.env.host ||
+      "http://localhost:8080";
+
+    const formatToBackendDate = (d: string | undefined, fallback: Date): string => {
+      if (!d) {
+        const pad = (n: number) => String(n).padStart(2, "0");
+        return `${pad(fallback.getDate())}/${pad(fallback.getMonth() + 1)}/${fallback.getFullYear()}`;
+      }
+      if (d.includes("/")) return d;
+      if (d.includes("-")) {
+        const parts = d.split("T")[0].split("-");
+        if (parts.length === 3) {
+          return `${parts[2].padStart(2, "0")}/${parts[1].padStart(2, "0")}/${parts[0]}`;
+        }
+      }
+      return d;
+    };
+
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const effectiveFrom = formatToBackendDate(fromDate, startOfMonth);
+    const effectiveTo = formatToBackendDate(toDate, endOfMonth);
+
+    const res = await axios.post(
+      `${apiHost}/calendar/getCalendarDetails`,
       {
-        fromDate:"2025-04-01",
-        toDate:"2025-04-31"
+        fromDate: effectiveFrom,
+        toDate: effectiveTo,
       },
       {
         headers: {
@@ -24,11 +51,9 @@ export async function getCalendarDetails(
         },
       }
     );
-    res = res.data;
-    console.log("res.data");
-    console.log(res.data);
 
-    return res.data as CalendarEvent[];
+    const data = res.data?.data ?? res.data;
+    return (Array.isArray(data) ? data : []) as CalendarEvent[];
   } catch (error) {
     console.warn("Error fetching calendar details:", error);
     return null;

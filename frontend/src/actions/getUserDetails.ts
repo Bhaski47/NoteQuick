@@ -10,7 +10,11 @@ export async function getUserDetails(): Promise<
     if (!token) {
       return { redirect: "/auth" };
     }
-    let res = await axios.get(`${process.env.host}/user/getUserDetails`, {
+    const apiHost =
+      process.env.NEXT_PUBLIC_API_URL ||
+      process.env.host ||
+      "http://localhost:8080";
+    let res = await axios.get(`${apiHost}/user/getUserDetails`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

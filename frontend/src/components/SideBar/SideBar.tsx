@@ -25,8 +25,8 @@ export default function SideBar() {
   }
 
   return (
-    <div className={`${userName && userName.length > 1 ? "block" : "hidden"}`}>
-      <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b dark:border-dark-borderDivider">
+    <div>
+      <div className="sm:hidden flex items-center justify-between px-4 py-3 border-b dark:border-dark-borderDivider">
         <h1 className="text-xl font-bold">NOTEQUICK</h1>
         <HiOutlineMenuAlt1
           size={26}
@@ -37,7 +37,7 @@ export default function SideBar() {
       <div
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 
           ${open ? "opacity-100 visible" : "opacity-0 invisible"} 
-          lg:hidden
+          sm:hidden
         `}
         onClick={() => setOpen(false)}
       />
@@ -46,7 +46,7 @@ export default function SideBar() {
           fixed z-50 top-0 left-0 h-dvh w-[75%] max-w-[280px] bg-light-backgroundColor dark:bg-dark-backgroundColor
           border-r border-light-borderDivider dark:border-dark-borderDivider px-5 pt-5 flex flex-col justify-between
           transform transition-transform duration-300 ease-in-out
-          ${open ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:w-[15vw] lg:flex
+          ${open ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0 sm:w-[15vw] sm:flex
         `}
       >
         <div className="flex justify-between items-center mb-6">

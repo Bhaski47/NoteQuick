@@ -72,9 +72,9 @@ function TaskModal({
                   }}
                   value={taskData.description}
                   onChange={(e) =>
-                    setTaskData((prev) => ({ ...prev, desc: e.target.value }))
+                    setTaskData((prev) => ({ ...prev, description: e.target.value }))
                   }
-                  onClear={() => setTaskData((prev) => ({ ...prev, desc: "" }))}
+                  onClear={() => setTaskData((prev) => ({ ...prev, description: "" }))}
                 />
                 <div className="flex my-4 gap-4 flex-wrap">
                   <DatePicker
@@ -115,6 +115,7 @@ function TaskModal({
                 <Button
                   color="default"
                   variant="bordered"
+                  onPress={() => setTaskData({})}
                   className="rounded-lg bg-light-buttonPrimary dark:bg-dark-buttonPrimary text-white border-light-buttonPrimary dark:border-dark-buttonPrimary w-full h-12"
                 >
                   Save Changes

@@ -64,8 +64,12 @@ function CalendarComponent({ userDetails }: TabNavigateProps) {
       const fromDate = moment(date).startOf("week").format("DD/MM/YYYY");
       const toDate = moment(date).endOf("week").format("DD/MM/YYYY");
 
+      const apiHost =
+        process.env.NEXT_PUBLIC_API_URL ||
+        process.env.host ||
+        "http://localhost:8080";
       const res = await axios.post(
-        `${process.env.host}/calendar/getCalendarDetails`,
+        `${apiHost}/calendar/getCalendarDetails`,
         { fromDate, toDate },
         { headers: { Authorization: `Bearer ${token}` } },
       );

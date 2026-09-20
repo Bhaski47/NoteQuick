@@ -22,16 +22,13 @@ public class TodoController {
     private TodoService todoService;
 
     @PostMapping("/getTodos")
-    public ResponseEntity<HashMap<String,Object>> getTodos(@RequestHeader(value = "Authorization",defaultValue = "") String token,
-                                                           @RequestBody(required = false) Map<String, String> requestBody) {
+    public ResponseEntity<HttpResponse> getTodos(@RequestHeader(value = "Authorization",defaultValue = "") String token,
+                                                   @RequestBody(required = false) Map<String, String> requestBody) {
         String status = (requestBody != null) ? requestBody.getOrDefault("status", "ALL") : "ALL";
         String order = (requestBody != null) ? requestBody.getOrDefault("order", "DESC") : "DESC";
         List<Todo> response = todoService.getTodo(token, status, order);
-        LinkedHashMap<String,Object> res = new LinkedHashMap<>();
-        res.put("status", HttpStatus.OK.value());
-        res.put("message", "Todo Acquired Successfully");
-        res.put("data", response);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        HttpResponse httpResponse = new HttpResponse(HttpStatus.OK.value(), "Todo Acquired Successfully", response);
+        return new ResponseEntity<>(httpResponse, HttpStatus.OK);
     }
 
     @PostMapping("/addTodo")
@@ -59,17 +56,14 @@ public class TodoController {
     }
 
     @PostMapping("/searchTodo")
-    public ResponseEntity<HashMap<String,Object>> searchTodo(@RequestHeader(value = "Authorization",defaultValue = "") String token,
-                                                             @RequestBody Map<String, String> requestBody) throws Exception {
+    public ResponseEntity<HttpResponse> searchTodo(@RequestHeader(value = "Authorization",defaultValue = "") String token,
+                                                     @RequestBody Map<String, String> requestBody) throws Exception {
         String query = requestBody.getOrDefault("query", "");
         String status = requestBody.getOrDefault("status", "ALL");
         String order = requestBody.getOrDefault("order", "DESC");
         List<Todo> response = todoService.searchTodo(token, query, status, order);
-        LinkedHashMap<String,Object> res = new LinkedHashMap<>();
-        res.put("status", HttpStatus.OK.value());
-        res.put("message", "Search results acquired successfully");
-        res.put("data", response);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        HttpResponse httpResponse = new HttpResponse(HttpStatus.OK.value(), "Search results acquired successfully", response);
+        return new ResponseEntity<>(httpResponse, HttpStatus.OK);
     }
 
 }

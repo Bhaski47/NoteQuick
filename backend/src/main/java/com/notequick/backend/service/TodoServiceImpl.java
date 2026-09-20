@@ -49,7 +49,31 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public void updateTodo(String token, Todo todo) throws Exception {
-        todoJpaRepo.save(todo);
+        if (todo == null || todo.getTodoId() == null) {
+            throw new InvalidCredentialException("Todo ID is required");
+        }
+        String userId = jwtUtil.extractUserId(token);
+        Todo existingTodo = todoJpaRepo.findById(todo.getTodoId())
+                .orElseThrow(() -> new Exception("Todo Not Found"));
+        if (!userId.equals(existingTodo.getUserId())) {
+            throw new InvalidCredentialException("Unauthorized: You do not own this todo");
+        }
+        if (todo.getTitle() != null) {
+            existingTodo.setTitle(todo.getTitle());
+        }
+        if (todo.getDescription() != null) {
+            existingTodo.setDescription(todo.getDescription());
+        }
+        if (todo.getFromDate() != null) {
+            existingTodo.setFromDate(todo.getFromDate());
+        }
+        if (todo.getToDate() != null) {
+            existingTodo.setToDate(todo.getToDate());
+        }
+        if (todo.getStatus() != null) {
+            existingTodo.setStatus(todo.getStatus());
+        }
+        todoJpaRepo.save(existingTodo);
     }
 
     private List<TodoStatus> resolveStatuses(String status) {
@@ -81,14 +105,17 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public void deleteTodo(String token, String todoId) throws Exception {
-        try{
-            Todo todo = todoJpaRepo.findById(UUID.fromString(todoId))
-                    .orElseThrow(()->new Exception("Todo Not Found"));
+        String userId = jwtUtil.extractUserId(token);
+        Todo todo = todoJpaRepo.findById(UUID.fromString(todoId))
+                .orElseThrow(() -> new Exception("Todo Not Found"));
+        if (!userId.equals(todo.getUserId())) {
+            throw new InvalidCredentialException("Unauthorized: You do not own this todo");
+        }
+        try {
             todo.setStatus(TodoStatus.REMOVED);
             todoJpaRepo.save(todo);
-        }
-        catch(Exception e){
-            throw new Exception("Error while adding todo");
+        } catch (Exception e) {
+            throw new Exception("Error while deleting todo");
         }
     }
 

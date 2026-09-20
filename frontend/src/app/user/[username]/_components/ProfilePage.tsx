@@ -1,18 +1,8 @@
-"use client";
-// import { useTheme } from "@/context/ThemeContext";
 import { Props } from "@/types/profile";
 import NavCard from "./NavCard";
 import InfoCard from "./InfoCard";
-import { useEffect } from "react";
-import { useTheme } from "@/context/ThemeContext";
 
 export default function ProfilePage({ data }: Props) {
-  const {setTheme} = useTheme();
-  useEffect(() => {
-    setTheme('light')
-  }, []);
-  console.log("data")
-  console.log(data)
   return (
     <div>
       <main className="w-[90%] md:w-[70%] m-auto ">

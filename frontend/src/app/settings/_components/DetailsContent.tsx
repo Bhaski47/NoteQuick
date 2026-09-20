@@ -72,8 +72,12 @@ export default function DetailsContent() {
             onPress={async () => {
               setIsLoading(true);
               const token = getCookie("token");
+              const apiHost =
+                process.env.NEXT_PUBLIC_API_URL ||
+                process.env.host ||
+                "http://localhost:8080";
               await axios.put(
-                `${process.env.host}/user/updateUserDetails`,
+                `${apiHost}/user/updateUserDetails`,
                 {
                   description
                 },

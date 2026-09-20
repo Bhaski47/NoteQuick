@@ -108,10 +108,14 @@ export default function TaskBox({
       setIsLoading(true);
       NProgress.start();
       const token = getCookie("token");
+      const apiHost =
+        process.env.NEXT_PUBLIC_API_URL ||
+        process.env.host ||
+        "http://localhost:8080";
       const isNew = taskData.mode === "new" || mode === "new";
       const url = isNew
-        ? `${process.env.host}/todos/addTodo`
-        : `${process.env.host}/todos/updateTodo`;
+        ? `${apiHost}/todos/addTodo`
+        : `${apiHost}/todos/updateTodo`;
 
       const payload = {
         ...taskData,
@@ -147,8 +151,12 @@ export default function TaskBox({
       setIsLoading(true);
       NProgress.start();
       const token = getCookie("token");
+      const apiHost =
+        process.env.NEXT_PUBLIC_API_URL ||
+        process.env.host ||
+        "http://localhost:8080";
       await axios.post(
-        `${process.env.host}/todos/deleteTodo`,
+        `${apiHost}/todos/deleteTodo`,
         { todoId: taskData.todoId },
         { headers: { Authorization: `Bearer ${token}` } },
       );

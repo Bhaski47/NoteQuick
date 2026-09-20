@@ -88,19 +88,19 @@ public class JwtUtil {
 
     public String extractUserId(String token) {
         String authToken = getJwtToken(token);
-        Claims claims = Jwts.parser()
-                .setSigningKey(secret)
-                .build()
-                .parseSignedClaims(authToken)
-                .getBody();
-
+        if (authToken == null) {
+            throw new JwtException("Token is missing or empty");
+        }
+        Claims claims = extractAllClaimsFromToken(authToken);
         return claims.get("userId", String.class);
     }
 
     private String getJwtToken(String token) {
-
-        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
-            return token.substring(7);
+        if (StringUtils.hasText(token)) {
+            if (token.startsWith("Bearer ")) {
+                return token.substring(7).trim();
+            }
+            return token.trim();
         }
         return null;
     }

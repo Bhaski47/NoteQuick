@@ -23,7 +23,7 @@ export default function InputButton({
         required
         type={inputType !== undefined ? inputType : "text"}
         className={`${inputClassName}`}
-        defaultValue={value}
+        value={value ?? ""}
         onChange={onChange}
         disabled={disabled}
       />

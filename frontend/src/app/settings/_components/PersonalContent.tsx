@@ -30,6 +30,15 @@ export default function PersonalContent() {
   const [phone, setPhone] = useState(storePhone ?? "");
   const [isLoading, setIsLoading] = useState(false);
 
+  React.useEffect(() => {
+    setName(storeName ?? "");
+    setGender(storeGender ?? "");
+    setBirthday(storeBirthday ?? "");
+    setCity(storeCity ?? "");
+    setCountry(storeCountry ?? "");
+    setPhone(storePhone ?? "");
+  }, [storeName, storeGender, storeBirthday, storeCity, storeCountry, storePhone]);
+
   const hasChanges =
     name !== (storeName ?? "") ||
     gender !== (storeGender ?? "") ||
@@ -55,27 +64,27 @@ export default function PersonalContent() {
         <div className="flex flex-row w-4/2 gap-x-52 gap-y-3 flex-wrap mt-5">
           <InputButton
             placeholder="Name"
-            value={storeName}
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <InputButton
             placeholder="Gender"
-            value={storeGender}
+            value={gender}
             onChange={(e) => setGender(e.target.value)}
           />
           <InputButton
             placeholder="Birthday"
-            value={storeBirthday}
+            value={birthday}
             onChange={(e) => setBirthday(e.target.value)}
           />
           <InputButton
             placeholder="City"
-            value={storeCity}
+            value={city}
             onChange={(e) => setCity(e.target.value)}
           />
           <InputButton
             placeholder="Country"
-            value={storeCountry}
+            value={country}
             onChange={(e) => setCountry(e.target.value)}
           />
         </div>
@@ -90,14 +99,26 @@ export default function PersonalContent() {
         </div>
         <InputButton
           placeholder="Phone"
-          value={storePhone}
+          value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
       </div>
       <Divider />
       {hasChanges && (
         <div className="flex justify-end gap-10 w-10/12 my-6">
-          <Button color="default" variant="bordered" className="rounded-lg">
+          <Button
+            color="default"
+            variant="bordered"
+            className="rounded-lg"
+            onPress={() => {
+              setName(storeName ?? "");
+              setGender(storeGender ?? "");
+              setBirthday(storeBirthday ?? "");
+              setCity(storeCity ?? "");
+              setCountry(storeCountry ?? "");
+              setPhone(storePhone ?? "");
+            }}
+          >
             Cancel
           </Button>
           <Button
@@ -108,8 +129,12 @@ export default function PersonalContent() {
             onPress={async () => {
               setIsLoading(true);
               const token = getCookie("token");
+              const apiHost =
+                process.env.NEXT_PUBLIC_API_URL ||
+                process.env.host ||
+                "http://localhost:8080";
               await axios.put(
-                `${process.env.host}/user/updateUserDetails`,
+                `${apiHost}/user/updateUserDetails`,
                 {
                   name,
                   gender,

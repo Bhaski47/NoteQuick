@@ -28,4 +28,7 @@ public class OtpTokens {
 
     @Column(name = "used", nullable = false)
     private boolean used = false;
+
+    @Column(name = "attempts", nullable = false)
+    private int attempts = 0;
 }

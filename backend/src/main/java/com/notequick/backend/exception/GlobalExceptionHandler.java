@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> map = new HashMap<>();
         map.put("status", HttpStatus.METHOD_NOT_ALLOWED.value());
         map.put("message", "Request method " + ex.getMethod() + " is not supported");
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
                 .body(map);
     }
 
@@ -35,14 +35,14 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> map = new HashMap<>();
         map.put("status", HttpStatus.UNAUTHORIZED.value());
         map.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(map);
     }
 
     @ExceptionHandler(ParsingException.class)
     public ResponseEntity<HashMap<String,Object>> handleParsingException(ParsingException ex) {
         LinkedHashMap<String,Object> map = new LinkedHashMap<>();
-        map.put("status", HttpStatus.OK.value());
+        map.put("status", HttpStatus.BAD_REQUEST.value());
         map.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(map);
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
 
         response.put("message", "Something went wrong");
         response.put("other_message",errors);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(InvalidCredentialException.class)
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
         LinkedHashMap<String,Object> map = new LinkedHashMap<>();
         map.put("status", HttpStatus.UNAUTHORIZED.value());
         map.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.OK).body(map);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(map);
     }
 
     @ExceptionHandler(Exception.class)
@@ -81,6 +81,6 @@ public class GlobalExceptionHandler {
         LinkedHashMap<String,Object> map = new LinkedHashMap<>();
         map.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         map.put("message", "Exception error "+ex.getMessage());
-        return ResponseEntity.status(HttpStatus.OK).body(map);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(map);
     }
 }

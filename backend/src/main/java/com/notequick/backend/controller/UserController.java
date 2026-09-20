@@ -54,13 +54,10 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<HashMap<String,Object>> getUserDetails(@PathVariable String username) {
+    public ResponseEntity<HttpResponse> getUserDetails(@PathVariable String username) {
         UserDetailsDTO response = userService.userProfileById(username);
-        LinkedHashMap<String,Object> res = new LinkedHashMap<>();
-        res.put("status",HttpStatus.OK.value());
-        res.put("message","Data Acquired Successfully");
-        res.put("data",response);
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        HttpResponse httpResponse = new HttpResponse(HttpStatus.OK.value(), "Data Acquired Successfully", response);
+        return new ResponseEntity<>(httpResponse, HttpStatus.OK);
     }
 
 }

@@ -5,9 +5,11 @@ import com.notequick.backend.dto.user.UpdateUserDTO;
 import com.notequick.backend.dto.user.UserDetailsDTO;
 import com.notequick.backend.entity.OtpTokens;
 import com.notequick.backend.entity.User;
+import com.notequick.backend.enums.TodoStatus;
 import com.notequick.backend.enums.UserStatus;
 import com.notequick.backend.exception.InvalidCredentialException;
 import com.notequick.backend.repository.OtpTokensRepo;
+import com.notequick.backend.repository.TodoJpaRepo;
 import com.notequick.backend.repository.UserJpaRepo;
 import com.notequick.backend.utils.JwtUtil;
 import jakarta.mail.internet.MimeMessage;
@@ -23,10 +25,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserJpaRepo userJpaRepo;
+
+    @Autowired
+    private TodoJpaRepo todoJpaRepo;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -140,7 +145,26 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDetailsDTO userProfileById(String userName) {
-        return userJpaRepo.getUserDetails(userName).orElseThrow(()->new InvalidCredentialException("User not found"));
+        User user = userJpaRepo.findByUserNameAndStatus(userName, UserStatus.ACTIVE)
+                .orElseThrow(() -> new InvalidCredentialException("User not found"));
+        String uid = user.getUserId().toString();
+        long completed = todoJpaRepo.countByUserIdAndStatus(uid, TodoStatus.COMPLETED);
+        long removed = todoJpaRepo.countByUserIdAndStatus(uid, TodoStatus.REMOVED);
+        long active = todoJpaRepo.countByUserIdAndStatus(uid, TodoStatus.ACTIVE);
+        return new UserDetailsDTO(
+                completed,
+                removed,
+                active,
+                user.getUsername(),
+                user.getEmail(),
+                user.getGender(),
+                user.getName(),
+                user.getPhone(),
+                user.getDescription(),
+                user.getBirthday(),
+                user.getCity(),
+                user.getCountry()
+        );
     }
 
     @Override
@@ -164,31 +188,46 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void sendOtp(String email) throws Exception {
-        String userName = userJpaRepo.findByEmail(email)
-                .orElseThrow(() -> new InvalidCredentialException("No account found with this email")).getUsername();
+        String userName = userJpaRepo.findByEmailAndStatus(email, UserStatus.ACTIVE)
+                .orElseThrow(() -> new InvalidCredentialException("No active account found with this email")).getUsername();
 
         otpTokensRepository.deleteByEmail(email);
-        String otp = String.format("%06d", new Random().nextInt(999999));
+        SecureRandom secureRandom = new SecureRandom();
+        String otp = String.format("%06d", secureRandom.nextInt(1000000));
 
         OtpTokens token = new OtpTokens();
         token.setEmail(email);
         token.setOtp(otp);
         token.setExpiresAt(LocalDateTime.now().plusMinutes(10));
+        token.setAttempts(0);
         otpTokensRepository.save(token);
-        sendOtp(email, otp,userName);
+        sendOtp(email, otp, userName);
     }
 
     @Override
+    @Transactional
     public void verifyOtpAndResetPassword(String email, String otp, String newPassword) {
         OtpTokens token = otpTokensRepository
-                .findByEmailAndOtpAndUsedFalse(email, otp)
-                .orElseThrow(() -> new InvalidCredentialException("Invalid OTP"));
+                .findTopByEmailAndUsedFalseOrderByExpiresAtDesc(email)
+                .orElseThrow(() -> new InvalidCredentialException("Invalid or expired OTP"));
 
         if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new InvalidCredentialException("OTP has expired");
         }
 
-        User user = userJpaRepo.findByEmail(email)
+        if (token.getAttempts() >= 5) {
+            token.setUsed(true);
+            otpTokensRepository.save(token);
+            throw new InvalidCredentialException("Too many failed attempts. Please request a new OTP.");
+        }
+
+        if (!token.getOtp().equals(otp)) {
+            token.setAttempts(token.getAttempts() + 1);
+            otpTokensRepository.save(token);
+            throw new InvalidCredentialException("Invalid OTP");
+        }
+
+        User user = userJpaRepo.findByEmailAndStatus(email, UserStatus.ACTIVE)
                 .orElseThrow(() -> new InvalidCredentialException("User not found"));
         user.setPassword(passwordEncoder.encode(newPassword));
         userJpaRepo.save(user);
@@ -198,13 +237,26 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public void verifyOtp(String email, String otp) {
         OtpTokens token = otpTokensRepository
-                .findByEmailAndOtpAndUsedFalse(email, otp)
-                .orElseThrow(() -> new InvalidCredentialException("Invalid OTP"));
+                .findTopByEmailAndUsedFalseOrderByExpiresAtDesc(email)
+                .orElseThrow(() -> new InvalidCredentialException("Invalid or expired OTP"));
 
         if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new InvalidCredentialException("OTP has expired");
+        }
+
+        if (token.getAttempts() >= 5) {
+            token.setUsed(true);
+            otpTokensRepository.save(token);
+            throw new InvalidCredentialException("Too many failed attempts. Please request a new OTP.");
+        }
+
+        if (!token.getOtp().equals(otp)) {
+            token.setAttempts(token.getAttempts() + 1);
+            otpTokensRepository.save(token);
+            throw new InvalidCredentialException("Invalid OTP");
         }
     }
 

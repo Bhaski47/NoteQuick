@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface OtpTokensRepo extends JpaRepository<OtpTokens, Long> {
     Optional<OtpTokens> findByEmailAndOtpAndUsedFalse(String email, String otp);
+    Optional<OtpTokens> findTopByEmailAndUsedFalseOrderByExpiresAtDesc(String email);
     void deleteByEmail(String email);
 }

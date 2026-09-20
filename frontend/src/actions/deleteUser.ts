@@ -8,11 +8,17 @@ export async function deleteUser() {
     if (!token) {
       return { redirect: "/auth" };
     }
-    await axios.get(`${process.env.host}/user/deleteUser`, {
+    const apiHost =
+      process.env.NEXT_PUBLIC_API_URL ||
+      process.env.host ||
+      "http://localhost:8080";
+    await axios.delete(`${apiHost}/user/deleteUser`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    (await cookies()).delete("token");
+    return { redirect: "/auth" };
   } catch (error) {
     console.warn("Failed to delete account", error);
     return null;
