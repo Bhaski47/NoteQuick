@@ -36,7 +36,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={manrope.variable}>
+      <body
+        className={`${manrope.variable} bg-light-backgroundColor dark:bg-dark-backgroundColor text-light-textPrimary dark:text-dark-textPrimary min-h-dvh`}
+      >
         <SideBar />
         <Providers>{children}</Providers>
       </body>

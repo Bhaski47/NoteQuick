@@ -79,17 +79,13 @@ function CalendarComponent({ userDetails }: TabNavigateProps) {
       if (Array.isArray(fetched)) {
         const mapped: CalendarEvent[] = fetched.map((item: any) => {
           const start = new Date(item.start);
-          const end = new Date(item.end);
-          const adjustedEnd =
-            start.getTime() === end.getTime()
-              ? new Date(start.getTime() + 30 * 60 * 1000)
-              : end;
+          const end = item.end ? new Date(item.end) : start;
 
           return {
             id: item.id,
             title: item.title || "Untitled",
             start,
-            end: adjustedEnd,
+            end,
           };
         });
         setEvents(mapped);
@@ -180,7 +176,9 @@ function CalendarComponent({ userDetails }: TabNavigateProps) {
             }}
           >
             {isSameDay
-              ? `${moment(event.start).format("h:mm A")} – ${moment(event.end).format("h:mm A")}`
+              ? event.start.getTime() === event.end.getTime()
+                ? moment(event.start).format("h:mm A")
+                : `${moment(event.start).format("h:mm A")} – ${moment(event.end).format("h:mm A")}`
               : `${moment(event.start).format("MMM D")} – ${moment(event.end).format("MMM D")}`}
           </div>
         </div>
@@ -253,9 +251,11 @@ function CalendarComponent({ userDetails }: TabNavigateProps) {
                       {moment(selectedEvent?.start).format("ddd, MMM D YYYY")}
                     </Chip>
                     <span className="text-light-textMuted dark:text-dark-textMuted text-sm">
-                      {moment(selectedEvent?.start).format("h:mm A")}
-                      {" – "}
-                      {moment(selectedEvent?.end).format("h:mm A")}
+                      {selectedEvent &&
+                      selectedEvent.start.getTime() ===
+                        selectedEvent.end.getTime()
+                        ? moment(selectedEvent.start).format("h:mm A")
+                        : `${moment(selectedEvent?.start).format("h:mm A")} – ${moment(selectedEvent?.end).format("h:mm A")}`}
                     </span>
                   </div>
                 </div>

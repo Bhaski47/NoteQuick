@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface userState {
   name: string;
@@ -25,40 +26,46 @@ interface userState {
   clearUserData: () => void;
 }
 
-export const useUserStore = create<userState>((set, get) => ({
-  name: "",
-  setName: (name) => set({ name: name }),
-  clearName: () => set({ name: "" }),
-  userName: "",
-  setUserName: (name) => set({ userName: name }),
-  clearUserName: () => set({ userName: "" }),
-  email: "",
-  setEmail: (email) => set({ email }),
-  clearEmail: () => set({ email: "" }),
-  description: "",
-  setDescription: (description) => set({ description }),
-  gender: "",
-  setGender: (gender) => set({ gender }),
-  birthday: "",
-  setBirthday: (birthday) => set({ birthday }),
-  city: "",
-  setCity: (city) => set({ city }),
-  country: "",
-  setCountry: (country) => set({ country }),
-  phone: "",
-  setPhone: (phone) => set({ phone }),
-  clearUserData: () => {
-    const { clearName, clearUserName, clearEmail } = get();
-    clearName();
-    clearUserName();
-    clearEmail();
-    set({
+export const useUserStore = create<userState>()(
+  persist(
+    (set) => ({
+      name: "",
+      setName: (name) => set({ name: name }),
+      clearName: () => set({ name: "" }),
+      userName: "",
+      setUserName: (name) => set({ userName: name }),
+      clearUserName: () => set({ userName: "" }),
+      email: "",
+      setEmail: (email) => set({ email }),
+      clearEmail: () => set({ email: "" }),
       description: "",
+      setDescription: (description) => set({ description }),
       gender: "",
+      setGender: (gender) => set({ gender }),
       birthday: "",
+      setBirthday: (birthday) => set({ birthday }),
       city: "",
+      setCity: (city) => set({ city }),
       country: "",
+      setCountry: (country) => set({ country }),
       phone: "",
-    });
-  },
-}));
+      setPhone: (phone) => set({ phone }),
+      clearUserData: () => {
+        set({
+          name: "",
+          userName: "",
+          email: "",
+          description: "",
+          gender: "",
+          birthday: "",
+          city: "",
+          country: "",
+          phone: "",
+        });
+      },
+    }),
+    {
+      name: "notequick-user-store",
+    }
+  )
+);

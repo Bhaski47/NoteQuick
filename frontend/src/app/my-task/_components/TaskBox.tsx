@@ -14,6 +14,9 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Autocomplete,
+  AutocompleteItem,
+  Chip,
 } from "@heroui/react";
 import {
   CalendarDate,
@@ -24,7 +27,7 @@ import {
 } from "@internationalized/date";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getLocalTimeZone } from "@internationalized/date";
 import { toCalendarDateTimeValue, toNoonISO } from "@/utils/FormatTime";
 import { LuTrash2, LuX } from "react-icons/lu";
@@ -41,13 +44,91 @@ export default function TaskBox({
   mode: "new" | "edit";
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const initialTodo = useRef<taskBoxProps>({ ...taskData });
+  const initialTodo = useRef<taskBoxProps>({
+    ...taskData,
+    tags: [...(taskData.tags || [])],
+  });
   const [hasChanges, setHasChanges] = useState(false);
   const setTodoListData = useTodoStore((s) => s.setAllTodos);
+  const allTodos = useTodoStore((s) => s.allTodos);
+  const storeTags = useTodoStore((s) => s.tags);
   const statusFilter = useTodoStore((s) => s.statusFilter);
   const sortOrder = useTodoStore((s) => s.sortOrder);
   const todayDate = today(getLocalTimeZone());
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [tagInput, setTagInput] = useState("");
+
+  // Aggregate all existing tags from allTodos and storeTags
+  const allExistingTags = useMemo(() => {
+    const set = new Set<string>();
+    if (Array.isArray(storeTags)) {
+      storeTags.forEach((t) => {
+        if (t?.name) set.add(t.name.trim().toLowerCase());
+      });
+    }
+    if (Array.isArray(allTodos)) {
+      allTodos.forEach((item: taskBoxProps) => {
+        if (Array.isArray(item?.tags)) {
+          item.tags.forEach((tag: string) => {
+            if (tag && typeof tag === "string" && tag.trim().length > 0) {
+              set.add(tag.trim().toLowerCase());
+            }
+          });
+        }
+      });
+    }
+    return Array.from(set).sort();
+  }, [allTodos, storeTags]);
+
+  const currentTags = useMemo(() => {
+    const raw = taskData.tags;
+    if (!Array.isArray(raw)) return [];
+    const seen = new Set<string>();
+    const list: string[] = [];
+    raw.forEach((t) => {
+      if (typeof t === "string") {
+        const norm = t.trim().toLowerCase();
+        if (norm && !seen.has(norm)) {
+          seen.add(norm);
+          list.push(norm);
+        }
+      }
+    });
+    return list;
+  }, [taskData.tags]);
+
+  const matchingSuggestions = useMemo(() => {
+    const q = tagInput.trim().toLowerCase();
+    const available = allExistingTags.filter((tag) => !currentTags.includes(tag));
+    if (!q) return available;
+    return available.filter((tag) => tag.includes(q));
+  }, [allExistingTags, tagInput, currentTags]);
+
+  const handleAddTag = (rawTag: string) => {
+    const normalized = rawTag.trim().toLowerCase();
+    if (!normalized) return;
+    setTaskData((prev) => {
+      const existing = (prev.tags || []).map((t) => t.trim().toLowerCase());
+      if (existing.includes(normalized)) {
+        return prev;
+      }
+      return {
+        ...prev,
+        tags: [...(prev.tags || []), normalized],
+      };
+    });
+    setTagInput("");
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTaskData((prev) => ({
+      ...prev,
+      tags: (prev.tags || []).filter(
+        (t: string) => t.trim().toLowerCase() !== tagToRemove.trim().toLowerCase()
+      ),
+    }));
+  };
 
   const getNowDateTime = () => {
     const nowTime = now(getLocalTimeZone());
@@ -62,14 +143,18 @@ export default function TaskBox({
   };
 
   const todayNoon = getNowDateTime();
+  const defaultEndTime = getNowDateTime().add({ minutes: 30 });
 
   useEffect(() => {
     if (mode === "new") {
+      const nowDt = getNowDateTime();
+      const endDt = nowDt.add({ minutes: 30 });
       setTaskData({
         title: "",
         description: "",
-        fromDate: toNoonISO(getNowDateTime()),
-        toDate: toNoonISO(getNowDateTime()),
+        fromDate: toNoonISO(nowDt),
+        toDate: toNoonISO(endDt),
+        tags: [],
         mode: "new",
       });
     }
@@ -85,18 +170,30 @@ export default function TaskBox({
       );
     };
 
+    const tagsEqual = (a?: string[], b?: string[]) => {
+      const arrA = (a || []).map((t) => t.trim().toLowerCase());
+      const arrB = (b || []).map((t) => t.trim().toLowerCase());
+      if (arrA.length !== arrB.length) return false;
+      return arrA.every((t, i) => t === arrB[i]);
+    };
+
     const changesExist =
       initialTodo.current.title !== taskData.title ||
       initialTodo.current.description !== taskData.description ||
       !datesEqual(initialTodo.current.fromDate, taskData.fromDate) ||
-      !datesEqual(initialTodo.current.toDate, taskData.toDate);
+      !datesEqual(initialTodo.current.toDate, taskData.toDate) ||
+      !tagsEqual(initialTodo.current.tags, taskData.tags);
 
     setHasChanges(changesExist);
   }, [taskData]);
 
   useEffect(() => {
-    initialTodo.current = { ...taskData };
+    initialTodo.current = {
+      ...taskData,
+      tags: [...(taskData.tags || [])],
+    };
     setHasChanges(false);
+    setTagInput("");
   }, [taskData.todoId, mode]);
 
   const handleSave = async () => {
@@ -121,6 +218,7 @@ export default function TaskBox({
         ...taskData,
         fromDate: taskData.fromDate ?? toNoonISO(todayNoon),
         toDate: taskData.toDate ?? toNoonISO(todayNoon),
+        tags: currentTags,
       };
 
       await axios.post(url, payload, {
@@ -212,6 +310,66 @@ export default function TaskBox({
         }
         onClear={() => setTaskData((prev) => ({ ...prev, description: "" }))}
       />
+      {/* Tags Autocomplete Section */}
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-semibold text-light-textSecondary dark:text-dark-textSecondary">
+          Tags
+        </label>
+
+        {/* Tag Chips */}
+        {currentTags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-1">
+            {currentTags.map((tag: string) => (
+              <Chip
+                key={tag}
+                variant="flat"
+                color="primary"
+                size="sm"
+                onClose={() => handleRemoveTag(tag)}
+                className="font-medium text-xs bg-light-buttonPrimary/15 text-light-buttonPrimary dark:bg-dark-buttonPrimary/25 dark:text-dark-buttonPrimary"
+              >
+                #{tag}
+              </Chip>
+            ))}
+          </div>
+        )}
+
+        {/* HeroUI Autocomplete Input */}
+        <Autocomplete
+          aria-label="Add a tag"
+          placeholder={
+            currentTags.length > 0
+              ? "Add another tag..."
+              : "Type or select a tag..."
+          }
+          size="sm"
+          variant="bordered"
+          allowsCustomValue
+          selectedKey={null}
+          inputValue={tagInput}
+          onInputChange={(value) => setTagInput(value)}
+          onSelectionChange={(key) => {
+            if (key) {
+              handleAddTag(String(key));
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              if (tagInput.trim()) {
+                handleAddTag(tagInput);
+              }
+            }
+          }}
+          className="w-full"
+        >
+          {matchingSuggestions.map((suggestion) => (
+            <AutocompleteItem key={suggestion} textValue={suggestion}>
+              #{suggestion}
+            </AutocompleteItem>
+          ))}
+        </Autocomplete>
+      </div>
       <div className="flex flex-col sm:flex-row gap-3">
         <DatePicker
           label="From Date & Time"
@@ -227,11 +385,11 @@ export default function TaskBox({
               date ?? (todayNoon as ZonedDateTime | CalendarDateTime);
             const currentTo =
               toCalendarDateTimeValue(taskData.toDate as string | undefined) ??
-              todayNoon;
+              defaultEndTime;
             const newTo =
-              currentTo.compare(newFrom) >= 0
+              currentTo.compare(newFrom) > 0
                 ? currentTo
-                : newFrom.add({ days: 1 });
+                : newFrom.add({ minutes: 30 });
             setTaskData((prev) => ({
               ...prev,
               fromDate: toNoonISO(newFrom),
@@ -246,18 +404,16 @@ export default function TaskBox({
           minValue={todayDate}
           value={
             toCalendarDateTimeValue(taskData.toDate as string | undefined) ??
-            todayNoon
+            defaultEndTime
           }
           onChange={(date) => {
+            const currentFrom =
+              toCalendarDateTimeValue(taskData.fromDate as string | undefined) ??
+              todayNoon;
             const newTo =
-              date &&
-              date.compare(
-                toCalendarDateTimeValue(
-                  taskData.fromDate as string | undefined,
-                ) ?? todayNoon,
-              ) >= 0
+              date && date.compare(currentFrom) >= 0
                 ? date
-                : todayNoon.add({ days: 1 });
+                : currentFrom.add({ minutes: 30 });
             setTaskData((prev) => ({
               ...prev,
               toDate: toNoonISO(newTo),
@@ -269,29 +425,29 @@ export default function TaskBox({
   );
 
   const actionButtons = (
-    <div className="flex gap-10 w-10/12 my-6">
+    <div className="sticky bottom-0 bg-light-backgroundColor dark:bg-dark-backgroundColor pt-3 pb-2 border-t border-borderDivider z-20 flex gap-4 w-full mt-auto">
       <Button
         color="default"
         variant="bordered"
-        className="rounded-lg w-32 flex-1 h-11"
+        className="rounded-lg flex-1 h-11"
         onPress={() => setTaskData({})}
       >
         Close
       </Button>
-      {hasChanges ? (
-        <Button
-          color="default"
-          variant="bordered"
-          isLoading={isLoading}
-          className="rounded-lg bg-light-buttonPrimary dark:bg-dark-buttonPrimary text-white border-light-buttonPrimary dark:border-dark-buttonPrimary flex-1 h-11 p-0 m-0"
-          onPress={handleSave}
-        >
-          Save Changes
-        </Button>
-      ) : (
-        <div className="rounded-lg flex-1 h-11 p-0 m-0">
-        </div>
-      )}
+      <Button
+        color="default"
+        variant="bordered"
+        isLoading={isLoading}
+        isDisabled={!hasChanges || isLoading}
+        className={`rounded-lg flex-1 h-11 transition-all font-semibold ${
+          hasChanges && !isLoading
+            ? "bg-light-buttonPrimary dark:bg-dark-buttonPrimary text-white border-light-buttonPrimary dark:border-dark-buttonPrimary cursor-pointer shadow-md"
+            : "bg-zinc-200 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600 border-transparent cursor-not-allowed opacity-60"
+        }`}
+        onPress={handleSave}
+      >
+        Save Changes
+      </Button>
     </div>
   );
   const deleteModal = (
@@ -339,23 +495,23 @@ export default function TaskBox({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="hidden md:block border-1.5 border-borderDivider h-[80%] w-[40%] fixed right-7 top-12 rounded-lg"
+            className="hidden md:block border-1.5 border-borderDivider h-[80%] w-[40%] fixed right-7 top-12 rounded-lg bg-light-backgroundColor dark:bg-dark-backgroundColor shadow-xl"
           >
-            <main className="p-10 flex flex-col h-full overflow-y-scroll">
-              <div className="flex justify-between">
+            <main className="p-8 flex flex-col h-full overflow-hidden">
+              <div className="flex justify-between items-center mb-4">
                 <p className="text-xl font-bold text-textPrimary">Task :</p>
                 <button
-                  className="text-2xl text-rose-500 cursor-pointer"
+                  className="text-2xl text-rose-500 cursor-pointer hover:text-rose-600 transition-colors"
                   onClick={onOpen}
                 >
                   <LuTrash2 />
                 </button>
               </div>
 
-              <div className="flex flex-col justify-between flex-1">
+              <div className="flex-1 overflow-y-auto pr-1">
                 {formContent}
-                {actionButtons}
               </div>
+              {actionButtons}
             </main>
           </motion.div>
         )}
@@ -401,8 +557,9 @@ export default function TaskBox({
               </div>
               <div className="flex-1 overflow-y-auto px-5 py-4">
                 {formContent}
+              </div>
+              <div className="px-5 pb-3">
                 {actionButtons}
-                <div className="h-6" />
               </div>
             </motion.div>
           </div>

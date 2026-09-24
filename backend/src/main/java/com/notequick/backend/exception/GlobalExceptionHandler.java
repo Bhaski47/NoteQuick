@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<HashMap<String,Object>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
         HashMap<String,Object> map = new HashMap<>();
-        map.put("status", HttpStatus.METHOD_NOT_ALLOWED.value());
+        map.put("status_code", HttpStatus.METHOD_NOT_ALLOWED.value());
         map.put("message", "Request method " + ex.getMethod() + " is not supported");
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
                 .body(map);
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ExpiredJwtException.class,JwtException.class, MalformedJwtException.class, SignatureException.class})
     public ResponseEntity<HashMap<String,Object>> handleJwtException(JwtException ex) {
         HashMap<String,Object> map = new HashMap<>();
-        map.put("status", HttpStatus.UNAUTHORIZED.value());
+        map.put("status_code", HttpStatus.UNAUTHORIZED.value());
         map.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(map);
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ParsingException.class)
     public ResponseEntity<HashMap<String,Object>> handleParsingException(ParsingException ex) {
         LinkedHashMap<String,Object> map = new LinkedHashMap<>();
-        map.put("status", HttpStatus.BAD_REQUEST.value());
+        map.put("status_code", HttpStatus.BAD_REQUEST.value());
         map.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(map);
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
         LinkedHashMap<String,Object> response = new LinkedHashMap<>();
-        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("status_code", HttpStatus.BAD_REQUEST.value());
 
         List<Map<String, String>> errors = ex.getBindingResult().getFieldErrors()
                 .stream()
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCredentialException.class)
     public ResponseEntity<HashMap<String,Object>> handleInvalidCredentialException(InvalidCredentialException ex) {
         LinkedHashMap<String,Object> map = new LinkedHashMap<>();
-        map.put("status", HttpStatus.UNAUTHORIZED.value());
+        map.put("status_code", HttpStatus.UNAUTHORIZED.value());
         map.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(map);
     }
@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HashMap<String,Object>> handleException(Exception ex) {
         LinkedHashMap<String,Object> map = new LinkedHashMap<>();
-        map.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        map.put("status_code", HttpStatus.INTERNAL_SERVER_ERROR.value());
         map.put("message", "Exception error "+ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(map);
     }

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 export async function middleware(request: NextRequest) {
-  const protectedRoutes = ["/my-task", "/calendar", "/settings"];
+  const protectedRoutes = ["/my-task", "/calendar", "/settings", "/tags"];
 
   const path = request.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.some((route) =>
@@ -31,5 +31,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/my-task/:path*", "/calendar/:path*", "/settings/:path*"],
+  matcher: [
+    "/my-task/:path*",
+    "/calendar/:path*",
+    "/settings/:path*",
+    "/tags/:path*",
+  ],
 };

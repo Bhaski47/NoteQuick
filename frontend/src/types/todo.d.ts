@@ -7,7 +7,8 @@ export type taskBoxProps = {
   fromDate?: CalendarDate | undefined;
   toDate?: CalendarDate | undefined;
   mode?: "new" | "edit";
-  status?: TodoStatus
+  status?: TodoStatus;
+  tags?: string[];
 };
 
 export type Todos = {
@@ -18,6 +19,7 @@ export type Todos = {
   todoId: string;
   userId: string;
   status: string;
+  tags?: string[];
 };
 
 export type allTodos = taskBoxProps[];

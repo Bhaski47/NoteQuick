@@ -14,6 +14,12 @@ export const mainNavData: mainNavDataType = [
     iconLibrary: "md",
   },
   {
+    name: "Tags",
+    path: "/tags",
+    icon: "IoPricetagsOutline",
+    iconLibrary: "io5",
+  },
+  {
     name: "Settings",
     path: "/settings",
     icon: "MdOutlineSettings",

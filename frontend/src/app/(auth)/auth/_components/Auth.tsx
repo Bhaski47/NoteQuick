@@ -97,13 +97,7 @@ export default function Auth() {
   }
 
   async function handleApiResponse(res: loginResponse) {
-    if ("status" in res) {
-      const message = res.message || "An error occurred.";
-      setError(message);
-      toast.error(switchAuth ? "Login Failed" : "Sign Up Failed", message);
-      setIsLoading(false);
-      NProgress.done();
-    } else if ("other_message" in res) {
+    if ("other_message" in res && res.other_message) {
       const token = res.other_message;
       await fetch("/api/set-token", {
         method: "POST",
@@ -118,6 +112,12 @@ export default function Auth() {
       setIsLoading(false);
       NProgress.done();
       router.replace("/my-task");
+    } else {
+      const message = res.message || "An error occurred.";
+      setError(message);
+      toast.error(switchAuth ? "Login Failed" : "Sign Up Failed", message);
+      setIsLoading(false);
+      NProgress.done();
     }
   }
 

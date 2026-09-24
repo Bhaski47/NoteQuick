@@ -32,6 +32,9 @@ public class TodoServiceImpl implements TodoService {
         try{
             todo.setUserId(userId);
             todo.setTodoId(UUID.randomUUID());
+            if (todo.getTags() != null) {
+                todo.setTags(normalizeTags(todo.getTags()));
+            }
             todoJpaRepo.save(todo);
         }
         catch(Exception e){
@@ -73,7 +76,23 @@ public class TodoServiceImpl implements TodoService {
         if (todo.getStatus() != null) {
             existingTodo.setStatus(todo.getStatus());
         }
+        if (todo.getTags() != null) {
+            existingTodo.setTags(normalizeTags(todo.getTags()));
+        }
         todoJpaRepo.save(existingTodo);
+    }
+
+    private List<String> normalizeTags(List<String> tags) {
+        if (tags == null) {
+            return Collections.emptyList();
+        }
+        return tags.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(t -> !t.isEmpty())
+                .map(String::toLowerCase)
+                .distinct()
+                .toList();
     }
 
     private List<TodoStatus> resolveStatuses(String status) {

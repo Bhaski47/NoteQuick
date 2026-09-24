@@ -43,13 +43,6 @@ export default function ForgotPassword() {
         toast.error("Request Failed", msg);
         return;
       }
-      
-      if ("status" in data && data.status !== 200) {
-        const msg = data.message || "No account found with this email";
-        setError(msg);
-        toast.error("Request Failed", msg);
-        return;
-      }
       toast.success("OTP Sent", "Check your email for the 6-digit code");
       setStep("otp");
     } catch (e: any) {
@@ -82,13 +75,6 @@ export default function ForgotPassword() {
       const data: loginResponse = res.data;
 
       if ("status_code" in data && data.status_code !== 200) {
-        const msg = data.message || "Invalid or expired OTP";
-        setError(msg);
-        toast.error("Verification Failed", msg);
-        return;
-      }
-
-      if ("status" in data && data.status !== 200) {
         const msg = data.message || "Invalid or expired OTP";
         setError(msg);
         toast.error("Verification Failed", msg);
@@ -138,12 +124,6 @@ export default function ForgotPassword() {
         return;
       }
 
-      if ("status" in data && data.status !== 200) {
-        const msg = data.message || "Invalid or expired OTP";
-        setError(msg);
-        toast.error("Reset Failed", msg);
-        return;
-      }
       setSuccess("Password reset successfully!");
       toast.success("Password Reset!", "Your password has been changed. Reloading...");
       setTimeout(() => window.location.reload(), 1500);

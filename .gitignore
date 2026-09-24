@@ -3,7 +3,9 @@
 .env.local
 .env.development
 .env.production
-
+CLAUDE.md
+PROJECT_CONTEXT.md
+AGENTS.md
 # Java/Spring config
 backend/src/main/resources/application.properties
 backend/src/main/resources/application.yml

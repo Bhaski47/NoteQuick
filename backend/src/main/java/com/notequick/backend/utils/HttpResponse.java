@@ -31,9 +31,4 @@ public class HttpResponse {
         this.status_code = code;
         this.message = msg;
     }
-
-    public int getStatus() {
-        return this.status_code;
-    }
-
 }
