@@ -17,11 +17,9 @@ export default async function TagsPage() {
   }
 
   return (
-    <main className="sm:ml-[15%] min-h-dvh w-full sm:w-[85%] bg-light-backgroundColor dark:bg-dark-backgroundColor flex flex-col">
-      <TagsClient
-        initialTags={Array.isArray(tagsData) ? tagsData : []}
-        userDetails={userDetails}
-      />
-    </main>
+    <TagsClient
+      initialTags={Array.isArray(tagsData) ? tagsData : []}
+      userDetails={userDetails}
+    />
   );
 }

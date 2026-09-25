@@ -10,7 +10,6 @@ export type NavigateButtonProps = {
   className?: string;
   icon: string | undefined;
   iconLibrary: "md5" | "io5" | undefined;
-  className: string | undefined;
   selectedClassName: string | undefined;
   unSelectedClassName: string | undefined;
 };

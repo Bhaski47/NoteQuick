@@ -14,6 +14,10 @@ export default function SideBar() {
   const { userName } = useUserStore();
   const pathname = usePathname() || "";
 
+  React.useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
   const hideSideBar =
     pathname === "/" ||
     pathname === "/auth" ||

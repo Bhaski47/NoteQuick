@@ -3,6 +3,8 @@ import "./globals.css";
 import { Providers } from "@/provider/ThemeProvider";
 import SideBar from "@/components/SideBar/SideBar";
 import { Metadata } from "next";
+import NextTopLoader from "nextjs-toploader";
+import NavigationEvents from "@/components/NavigationEvents";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -39,6 +41,19 @@ export default function RootLayout({
       <body
         className={`${manrope.variable} bg-light-backgroundColor dark:bg-dark-backgroundColor text-light-textPrimary dark:text-dark-textPrimary min-h-dvh`}
       >
+        <NextTopLoader
+          color="#6457F9"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #6457F9,0 0 5px #6457F9"
+          zIndex={99999}
+        />
+        <NavigationEvents />
         <SideBar />
         <Providers>{children}</Providers>
       </body>
