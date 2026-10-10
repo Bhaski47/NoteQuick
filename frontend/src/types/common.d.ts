@@ -13,6 +13,7 @@ export type NavigateButtonProps = {
   className: string | undefined;
   selectedClassName: string | undefined;
   unSelectedClassName: string | undefined;
+  onNavigate?: () => void;
 };
 
 export type DividerProps = {

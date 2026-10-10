@@ -15,13 +15,13 @@ export default function NavigateButton({
   iconLibrary,
   unSelectedClassName,
   selectedClassName,
+  onNavigate
 }: NavigateButtonProps) {
   const router = useRouter();
   const pathname = usePathname();
   function handleClick() {
-    // const newPath = path.startsWith("/settings") ? path : `/settings${path}`;
+    onNavigate?.();
     router.push(path);
-    // router.push(path);
   }
 
   const isSettings =

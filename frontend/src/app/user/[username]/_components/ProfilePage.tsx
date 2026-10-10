@@ -1,3 +1,4 @@
+'use client'
 import { Props } from "@/types/profile";
 import NavCard from "./NavCard";
 import InfoCard from "./InfoCard";
@@ -70,7 +71,6 @@ export default function ProfilePage({ data }: Props) {
                 <InfoCard name={data.name} title="FULL NAME" />
                 <InfoCard name={data.userName} title="USERNAME" />
                 <InfoCard name={data.email} title="EMAIL" />
-                <InfoCard name={data.phNo} title="PHONE" />
                 <InfoCard name={data.gender} title="GENDER" />
                 <InfoCard name={data.birthDay} title="BIRTHDAY" />
                 <InfoCard name={data.city} title="CITY" />

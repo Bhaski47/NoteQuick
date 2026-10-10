@@ -64,6 +64,7 @@ export default function SideBar() {
               key={index}
               name={item.name}
               path={item.path}
+              onNavigate={() => setOpen(false)}
               icon={item.icon}
               iconLibrary={item.iconLibrary as "md5" | "io5"}
               selectedClassName="text-white bg-light-buttonActive dark:bg-dark-buttonActive"

@@ -1,3 +1,4 @@
+'use client'
 import { navCardProps } from "@/types/profile";
 import { motion } from "framer-motion";
 

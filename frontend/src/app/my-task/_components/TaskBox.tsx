@@ -531,7 +531,7 @@ export default function TaskBox({
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-light-backgroundColor dark:bg-dark-backgroundColor rounded-t-2xl shadow-2xl max-h-[90vh] flex flex-col"
+              className="overflow-hidden overscroll-contain fixed bottom-0 left-0 right-0 z-50 bg-light-backgroundColor dark:bg-dark-backgroundColor rounded-t-2xl shadow-2xl max-h-[90vh] flex flex-col"
             >
               <div className="flex justify-center pt-3 pb-1">
                 <div className="w-10 h-1 rounded-full bg-light-borderSecondary dark:bg-dark-borderSecondary" />

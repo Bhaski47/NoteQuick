@@ -31,7 +31,7 @@ export default function TaskFilter() {
           const uniqueTags = new Set(
             todo.tags
               .map((t) => (typeof t === "string" ? t.trim().toLowerCase() : ""))
-              .filter(Boolean)
+              .filter(Boolean),
           );
           uniqueTags.forEach((t) => {
             counts.set(t, (counts.get(t) || 0) + 1);
@@ -82,7 +82,10 @@ export default function TaskFilter() {
     <div className="w-full flex flex-col gap-2 pt-1 pb-1">
       <div className="w-full flex items-center justify-between flex-wrap gap-2">
         {/* General Filter Tabs */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-200/50 dark:bg-zinc-800/40 border border-zinc-200/70 dark:border-zinc-800/70 shadow-sm">
+        <div
+          className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-200/50 dark:bg-zinc-800/40 border border-zinc-200/70 dark:border-zinc-800/70 
+        shadow-sm overflow-x-auto whitespace-nowrap scrollbar-hide"
+        >
           {filterOptions.map((option) => {
             const isSelected = statusFilter === option.value;
             return (
@@ -142,7 +145,9 @@ export default function TaskFilter() {
             )}
           </span>
           <span>
-            {sortOrder === "DESC" ? "Newest First (Desc)" : "Oldest First (Asc)"}
+            {sortOrder === "DESC"
+              ? "Newest First (Desc)"
+              : "Oldest First (Asc)"}
           </span>
         </button>
       </div>
